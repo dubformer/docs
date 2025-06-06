@@ -1,0 +1,47 @@
+---
+title: 'Authentication'
+description: 'Learn how to authenticate with the Platform API'
+---
+
+The Platform API uses Bearer token authentication. All API requests must include an `Authorization` header with your API key.
+
+## Getting Your API Key
+
+1. [Sign up](https://app.dubformer.ai/signup) for a Dubformer account
+2. Navigate to the [API section](https://app.dubformer.ai/docs/api) in your dashboard
+3. Click "Create API key" to generate your token
+4. Copy your API key and store it securely
+
+<Warning>
+Keep your API key secure and never expose it in client-side code. Treat it like a password.
+</Warning>
+
+## Making Authenticated Requests
+
+Include your API key in the `Authorization` header of every request:
+
+```bash
+curl -X GET https://app.dubformer.ai/api/v1/balance \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Required Headers
+
+Every API request must include:
+
+- `Authorization: Bearer YOUR_API_KEY` - Your authentication token
+- `Content-Type: application/json` - For POST requests with JSON body
+
+## Optional Headers
+
+- `Idempotency-Key` - For POST requests to ensure request uniqueness and prevent duplicate processing
+
+Example with all headers:
+
+```bash
+curl -X POST https://app.dubformer.ai/api/v1/projects \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: unique-request-id" \
+  -d '{"name": "My Project", "source_lang": "en", "target_lang": "fr-FR"}'
+```

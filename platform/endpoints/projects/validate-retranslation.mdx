@@ -1,0 +1,202 @@
+---
+title: 'Validate Re-translation'
+api: 'POST /api/v1/projects/{project_id}/validate-translation-request'
+description: 'Validate re-translation request without creating it'
+---
+
+
+
+<RequestExample>
+```bash cURL
+curl -X POST https://app.dubformer.ai/api/v1/projects/{project_id}/validate-translation-request \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "target_script": [
+      {
+        "start_ms": 100,
+        "end_ms": 1544,
+        "text": "Au revoir le monde!",
+        "speaker_id": 1
+      }
+    ],
+    "target_speakers": [
+      {
+        "speaker_id": 1,
+        "voice_key": "53f154:fr-FR-DeniseNeural",
+        "style": "feminine"
+      }
+    ]
+  }'
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/projects/{project_id}/validate-translation-request'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json',
+}
+data = {
+    "target_script": [
+        {
+            "start_ms": 100,
+            "end_ms": 1544,
+            "text": "Au revoir le monde!",
+            "speaker_id": 1
+        }
+    ],
+    "target_speakers": [
+        {
+            "speaker_id": 1,
+            "voice_key": "53f154:fr-FR-DeniseNeural",
+            "style": "feminine"
+        }
+    ]
+}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/projects/{project_id}/validate-translation-request';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json',
+};
+const data = {
+    target_script: [
+        {
+            start_ms: 100,
+            end_ms: 1544,
+            text: "Au revoir le monde!",
+            speaker_id: 1
+        }
+    ],
+    target_speakers: [
+        {
+            speaker_id: 1,
+            voice_key: "53f154:fr-FR-DeniseNeural",
+            style: "feminine"
+        }
+    ]
+};
+
+fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(data),
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier of the project to validate against.
+</ParamField>
+
+## Request Body
+
+The request body uses the same format as [Create Re-translation](/platform/endpoints/projects/create-retranslation). All the same parameters are accepted:
+
+<ParamField body="target_script" type="array" required>
+  Array of target language script segments for dubbing.
+</ParamField>
+
+<ParamField body="target_speakers" type="array" required>
+  Array of target speaker configurations for dubbing.
+</ParamField>
+
+<ParamField body="mixing_mode" type="string" optional>
+  Audio mixing mode for validation.
+</ParamField>
+
+<ParamField body="use_fixed_timings" type="boolean" optional>
+  Whether to use fixed timings from the target script.
+</ParamField>
+
+<ParamField body="tts_volume" type="string" optional>
+  TTS volume level for validation.
+</ParamField>
+
+## Response
+
+### Valid Request
+
+<ResponseField name="valid" type="boolean">
+  Always `true` when validation passes.
+</ResponseField>
+
+<ResponseExample>
+```json Valid Request Response
+{
+  "valid": true
+}
+```
+</ResponseExample>
+
+### Invalid Request
+
+When validation fails, the response includes error details:
+
+<ResponseField name="error" type="string">
+  Error type (e.g., "ValidationError").
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed error message explaining what's wrong.
+</ResponseField>
+
+<ResponseExample>
+```json Invalid Voice Error
+{
+  "error": "ValidationError",
+  "message": "Unknown voice unknown-voice"
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Missing Speaker Error
+{
+  "error": "ValidationError",
+  "message": "Speaker ID 2 referenced in script but not found in target_speakers"
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Invalid Timing Error
+{
+  "error": "ValidationError",
+  "message": "Invalid timing: start_ms must be less than end_ms"
+}
+```
+</ResponseExample>
+
+## Common Validation Errors
+
+### Voice Validation
+- Unknown voice keys that don't exist in the system
+- Voice keys not compatible with the project's target language
+- Missing voice_key in speaker configuration
+
+### Speaker Validation  
+- Speaker IDs in script don't match any target_speakers entries
+- Duplicate speaker IDs in target_speakers array
+- Missing required speaker fields (speaker_id, voice_key, style)
+
+### Script Validation
+- Invalid timing values (start_ms >= end_ms)
+- Empty or missing text content
+- Invalid speaker_id references
+- Overlapping time segments
+
+### Language Compatibility
+- Voice doesn't support the project's target language
+- Special voice keys (soundalike, emotional_transfer) used with unsupported languages

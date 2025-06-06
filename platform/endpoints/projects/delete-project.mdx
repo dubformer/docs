@@ -1,0 +1,89 @@
+---
+title: 'Delete Project'
+api: 'DELETE /api/v1/projects/{project_id}'
+description: 'Delete a specific project'
+---
+
+<Warning>
+This action cannot be undone. All project data including output files, scripts, and processing results will be permanently deleted.
+</Warning>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://app.dubformer.ai/api/v1/projects/{project_id} \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/projects/{project_id}'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+}
+
+response = requests.delete(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/projects/{project_id}';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+};
+
+fetch(url, {
+    method: 'DELETE',
+    headers,
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier of the project to delete.
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the deletion was successful.
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true
+}
+```
+</ResponseExample>
+
+## Error Responses
+
+<ResponseExample>
+```json Project Not Found
+{
+  "error": "NotFoundError",
+  "message": "Project not found"
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Cannot Delete In Progress Project
+{
+  "error": "ValidationError",
+  "message": "Cannot delete project while processing is in progress"
+}
+```
+</ResponseExample>
+
+## Important Notes
+
+- Projects that are currently processing (`in_progress` status) cannot be deleted
+- Deleted projects cannot be recovered
+- This operation does not refund any minutes charged for the project
+- All download URLs associated with the project will become invalid 

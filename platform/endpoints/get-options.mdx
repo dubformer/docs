@@ -1,0 +1,116 @@
+---
+title: 'Get Options'
+api: 'GET /api/v1/options'
+description: 'Retrieve supported languages and options'
+---
+
+<RequestExample>
+```bash cURL
+curl -X GET https://app.dubformer.ai/api/v1/options \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/options'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/options';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+};
+
+fetch(url, {
+    method: 'GET',
+    headers,
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="source_langs" type="array">
+  Array of supported source language codes (without locale).
+  These are used for speech recognition and transcription.
+</ResponseField>
+
+<ResponseField name="target_langs" type="array">
+  Array of supported target language codes (with locale).
+  These are used for translation and text-to-speech synthesis.
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "source_langs": [
+    "ar", "de", "en", "es", "fr", "hi", "it", "ja", "ko", 
+    "nl", "pl", "pt", "ru", "tr", "uk", "zh"
+  ],
+  "target_langs": [
+    "af-ZA", "am-ET", "ar-AE", "ar-BH", "ar-DZ", "ar-EG", 
+    "ar-IQ", "ar-JO", "ar-KW", "ar-LB", "ar-LY", "ar-MA",
+    "bg-BG", "bn-BD", "bn-IN", "ca-ES", "cs-CZ", "cy-GB",
+    "da-DK", "de-AT", "de-CH", "de-DE", "el-GR", "en-AU",
+    "en-CA", "en-GB", "en-IE", "en-IN", "en-NZ", "en-US",
+    "en-ZA", "es-AR", "es-BO", "es-CL", "es-CO", "es-CR",
+    "es-DO", "es-EC", "es-ES", "es-GT", "es-HN", "es-MX",
+    "es-NI", "es-PA", "es-PE", "es-PR", "es-PY", "es-SV",
+    "es-US", "es-UY", "es-VE", "et-EE", "fa-IR", "fi-FI",
+    "fr-BE", "fr-CA", "fr-CH", "fr-FR", "ga-IE", "gl-ES",
+    "gu-IN", "he-IL", "hi-IN", "hr-HR", "hu-HU", "id-ID",
+    "is-IS", "it-IT", "ja-JP", "jv-ID", "ka-GE", "kk-KZ",
+    "km-KH", "kn-IN", "ko-KR", "lo-LA", "lt-LT", "lv-LV",
+    "mk-MK", "ml-IN", "mn-MN", "mr-IN", "ms-MY", "mt-MT",
+    "my-MM", "nb-NO", "ne-NP", "nl-BE", "nl-NL", "pl-PL",
+    "ps-AF", "pt-BR", "pt-PT", "ro-RO", "ru-RU", "si-LK",
+    "sk-SK", "sl-SI", "so-SO", "sq-AL", "sr-RS", "su-ID",
+    "sv-SE", "sw-KE", "sw-TZ", "ta-IN", "ta-LK", "ta-MY",
+    "ta-SG", "te-IN", "th-TH", "tr-TR", "uk-UA", "ur-IN",
+    "ur-PK", "uz-UZ", "vi-VN", "zh-CN", "zh-HK", "zh-TW",
+    "zu-ZA"
+  ]
+}
+```
+</ResponseExample>
+
+## Language Code Format
+
+### Source Languages
+Source language codes follow ISO 639-1 format (2-letter codes):
+- `en` - English
+- `es` - Spanish  
+- `fr` - French
+- `de` - German
+- etc.
+
+### Target Languages  
+Target language codes follow BCP 47 format (language-locale):
+- `en-US` - English (United States)
+- `en-GB` - English (United Kingdom)
+- `es-ES` - Spanish (Spain)
+- `es-MX` - Spanish (Mexico)
+- `fr-FR` - French (France)
+- `fr-CA` - French (Canada)
+- etc.
+
+## Usage Notes
+
+- Always use the exact language codes returned by this endpoint
+- Source languages are used in the `source_lang` field when creating projects
+- Target languages are used in the `target_lang` field when creating projects
+- Not all source-target language combinations may be available for all features
+- Language support is continuously expanding
+
+<Note>
+Call this endpoint regularly to get the most up-to-date list of supported languages, as new languages are added periodically.
+</Note> 

@@ -1,0 +1,138 @@
+---
+title: 'Error Handling'
+description: 'Understanding API errors and how to handle them'
+---
+
+## Common Error Types
+
+### ValidationError
+Occurs when request parameters are invalid or missing.
+
+<ResponseExample>
+```json ValidationError Example
+{
+  "error": "ValidationError",
+  "message": "source_lang is required"
+}
+```
+</ResponseExample>
+
+**Common causes:**
+- Missing required fields
+- Invalid language codes
+- Malformed request body
+- Invalid parameter values
+
+**How to fix:**
+- Check all required fields are provided
+- Validate language codes against [Get Options](endpoints/get-options)
+- Ensure request body is valid JSON
+
+### UnauthorizedError
+Occurs when authentication fails.
+
+<ResponseExample>
+```json UnauthorizedError Example
+{
+  "error": "UnauthorizedError", 
+  "message": "Invalid API key"
+}
+```
+</ResponseExample>
+
+**Common causes:**
+- Missing Authorization header
+- Invalid API key
+- Expired API key
+- Wrong API key for the environment
+
+**How to fix:**
+- Include `Authorization: Bearer YOUR_API_KEY` header
+- Verify your API key is correct and active
+- Generate a new API key if needed
+
+### PaymentRequiredError
+Occurs when there's insufficient balance or [subscription](https://app.dubformer.ai/subscriptions) access is required.
+
+<ResponseExample>
+```json PaymentRequiredError Example
+{
+  "error": "PaymentRequiredError",
+  "message": "Insufficient balance for this project"
+}
+```
+</ResponseExample>
+
+**Common causes:**
+- Account balance too low
+- Feature requires [active subscription](https://app.dubformer.ai/subscriptions)
+- Plan limits exceeded
+
+**How to fix:**
+- Check balance with [Get Balance](endpoints/get-balance)
+- Top up your account
+- [Upgrade your subscription plan](https://app.dubformer.ai/subscriptions)
+
+### VideoInfoError
+Occurs when there are issues with the provided video.
+
+<ResponseExample>
+```json VideoInfoError Example
+{
+  "error": "VideoInfoError",
+  "message": "Unable to process the provided video URL"
+}
+```
+</ResponseExample>
+
+**Common causes:**
+- Invalid video URL
+- Video file corrupted or inaccessible
+- Unsupported video format
+- Video too large or too long
+
+**How to fix:**
+- Verify video URL is accessible
+- Check video format is supported
+- Ensure video meets size/duration limits
+
+### NotFoundError
+Occurs when a requested resource doesn't exist.
+
+<ResponseExample>
+```json NotFoundError Example
+{
+  "error": "NotFoundError",
+  "message": "Project not found"
+}
+```
+</ResponseExample>
+
+**Common causes:**
+- Invalid project ID
+- Resource was deleted
+- Wrong endpoint URL
+
+**How to fix:**
+- Verify the resource ID is correct
+- Check if the resource was deleted
+- Ensure you're using the correct endpoint
+
+### RateLimitError
+Occurs when API rate limits are exceeded.
+
+<ResponseExample>
+```json RateLimitError Example
+{
+  "error": "RateLimitError",
+  "message": "Rate limit exceeded. Please try again later"
+}
+```
+</ResponseExample>
+
+**Rate limit headers:**
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1640995200
+```

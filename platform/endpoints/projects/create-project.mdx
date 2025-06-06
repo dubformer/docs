@@ -1,0 +1,151 @@
+---
+title: 'Create Project'
+api: 'POST /api/v1/projects'
+description: 'Create a new dubbing project'
+---
+
+<RequestExample>
+```bash cURL
+curl -X POST https://app.dubformer.ai/api/v1/projects \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My Project",
+    "source_lang": "en",
+    "target_lang": "fr-FR",
+    "source_video_url": "https://example.com/video.mp4",
+    "use_soundalike_voices": true,
+    "mixing_mode": "voiceover_with_original_track"
+  }'
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/projects'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json',
+}
+data = {
+    "name": "My Project",
+    "source_lang": "en", 
+    "target_lang": "fr-FR",
+    "source_video_url": "https://example.com/video.mp4",
+    "use_soundalike_voices": True,
+    "mixing_mode": "voiceover_with_original_track"
+}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/projects';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json',
+};
+const data = {
+    name: "My Project",
+    source_lang: "en",
+    target_lang: "fr-FR", 
+    source_video_url: "https://example.com/video.mp4",
+    use_soundalike_voices: true,
+    mixing_mode: "voiceover_with_original_track"
+};
+
+fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(data),
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+## Request Body
+
+<ParamField body="name" type="string" optional>
+  The name of the project for organization purposes.
+</ParamField>
+
+<ParamField body="source_lang" type="string" required>
+  The source language of the video without locale (e.g., "en", "es", "fr"). 
+  Get the full list from [Get Options](/platform/endpoints/get-options).
+</ParamField>
+
+<ParamField body="target_lang" type="string" required>
+  The target language for dubbing with locale (e.g., "en-US", "fr-FR", "es-ES").
+  Get the full list from [Get Options](/platform/endpoints/get-options).
+</ParamField>
+
+<ParamField body="source_video_url" type="string" required>
+  Direct link to the source video file or YouTube URL.
+</ParamField>
+
+<ParamField body="mixing_mode" type="string" optional default="voiceover_with_original_track">
+  Audio mixing mode:
+  - `voiceover_only` - Only voiceover without the original track
+  - `voiceover_with_original_track` - Voiceover with the original track  
+  - `voiceover_without_original_voice` - Smart vocal removal dubbing
+</ParamField>
+
+<ParamField body="use_emotional_transfer" type="boolean" optional default="false">
+  Enable emotional but less stable soundalike voices.
+  <Note>Supports only English, Spanish, French, German, Italian, and Portuguese target languages.</Note>
+</ParamField>
+
+<ParamField body="use_soundalike_voices" type="boolean" optional default="false">
+  Enable soundalike voices that match original speaker characteristics.
+  <Note>Requires an [active subscription](https://app.dubformer.ai/subscriptions).</Note>
+</ParamField>
+
+<ParamField body="source_script_content" type="string" optional>
+  Custom transcription of the source video in SRT, VTT, or plain text format.
+  <Note>[Pro subscription](https://app.dubformer.ai/subscriptions) feature.</Note>
+</ParamField>
+
+<ParamField body="glossary_content" type="string" optional>
+  Translation glossary in TSV format to ensure consistent terminology.
+  <Note>[Pro subscription](https://app.dubformer.ai/subscriptions) feature.</Note>
+</ParamField>
+
+<ParamField body="tts_volume" type="string" optional default="normal">
+  TTS volume level. Options: `very_quiet`, `quieter`, `normal`, `louder`, `very_loud`.
+</ParamField>
+
+## Response
+
+<ResponseField name="project_id" type="string">
+  Unique identifier for the created project.
+</ResponseField>
+
+<ResponseField name="cost_minutes" type="number">
+  Number of minutes charged for this project.
+</ResponseField>
+
+<ResponseField name="estimated_completion_date" type="string">
+  ISO timestamp of estimated completion time.
+</ResponseField>
+
+<ResponseField name="balance_minutes" type="number">
+  Remaining balance in minutes after this project.
+</ResponseField>
+
+<ResponseField name="translations_count" type="number">
+  Number of translations created (always 0 for new projects).
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "project_id": "12345",
+  "cost_minutes": 10,
+  "estimated_completion_date": "2024-06-05T12:00:00Z",
+  "balance_minutes": 90,
+  "translations_count": 0
+}
+```
+</ResponseExample>

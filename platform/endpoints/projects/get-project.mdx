@@ -1,0 +1,213 @@
+---
+title: 'Get Project'
+api: 'GET /api/v1/projects/{project_id}'
+description: 'Retrieve details of a specific project'
+---
+
+
+<RequestExample>
+```bash cURL
+curl -X GET https://app.dubformer.ai/api/v1/projects/{project_id} \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/projects/{project_id}'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/projects/{project_id}';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+};
+
+fetch(url, {
+    method: 'GET',
+    headers,
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier of the project to retrieve.
+</ParamField>
+
+## Response
+
+The response format varies depending on the project status.
+
+### Common Fields
+
+<ResponseField name="name" type="string">
+  Name of the project.
+</ResponseField>
+
+<ResponseField name="source_lang" type="string">
+  Source language of the video.
+</ResponseField>
+
+<ResponseField name="target_lang" type="string">
+  Target language for dubbing.
+</ResponseField>
+
+<ResponseField name="mixing_mode" type="string">
+  Audio mixing mode used for the project.
+</ResponseField>
+
+<ResponseField name="cost_minutes" type="number">
+  Number of minutes charged for this project.
+</ResponseField>
+
+<ResponseField name="created_date" type="string">
+  ISO timestamp when the project was created.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current status: `in_progress`, `ready`, or `error`.
+</ResponseField>
+
+### Ready Project Fields
+
+<ResponseField name="completion_date" type="string">
+  ISO timestamp when processing completed.
+</ResponseField>
+
+<ResponseField name="output_video_url" type="string">
+  Download URL for the dubbed video file.
+</ResponseField>
+
+<ResponseField name="output_tts_audio_url" type="string">
+  Download URL for the dubbed audio track.
+</ResponseField>
+
+<ResponseField name="output_source_script" type="array">
+  Array of source language script segments with timing information.
+  <Expandable title="Script Object Properties">
+    <ResponseField name="start_ms" type="number">
+      Start time in milliseconds.
+    </ResponseField>
+    <ResponseField name="end_ms" type="number">
+      End time in milliseconds.
+    </ResponseField>
+    <ResponseField name="text" type="string">
+      Text content of the segment.
+    </ResponseField>
+    <ResponseField name="speaker_id" type="number">
+      Unique identifier for the speaker.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="output_target_script" type="array">
+  Array of target language script segments with timing information.
+  Uses the same structure as `output_source_script`.
+</ResponseField>
+
+<ResponseField name="output_target_speakers" type="array">
+  Array of speaker configurations used for dubbing.
+  <Expandable title="Speaker Object Properties">
+    <ResponseField name="speaker_id" type="number">
+      Unique identifier for the speaker.
+    </ResponseField>
+    <ResponseField name="voice_key" type="string">
+      Voice identifier used for this speaker.
+    </ResponseField>
+    <ResponseField name="style" type="string">
+      Voice style: `masculine` or `feminine`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### In Progress Project Fields
+
+<ResponseField name="estimated_completion_date" type="string">
+  ISO timestamp of estimated completion time.
+</ResponseField>
+
+### Error Project Fields
+
+<ResponseField name="error_message" type="string">
+  Description of the error that occurred during processing.
+</ResponseField>
+
+<ResponseExample>
+```json Ready Project
+{
+  "name": "My Project",
+  "source_lang": "en",
+  "target_lang": "fr-FR", 
+  "mixing_mode": "voiceover_with_original_track",
+  "cost_minutes": 10,
+  "created_date": "2024-06-01T12:00:00Z",
+  "status": "ready",
+  "completion_date": "2024-06-02T12:00:00Z",
+  "output_video_url": "https://example.com/output_video.mp4",
+  "output_tts_audio_url": "https://example.com/output_tts_audio.wav",
+  "output_source_script": [
+    {
+      "start_ms": 100,
+      "end_ms": 1544,
+      "text": "Hello world!",
+      "speaker_id": 1
+    }
+  ],
+  "output_target_script": [
+    {
+      "start_ms": 100,
+      "end_ms": 1544,
+      "text": "Bonjour le monde!",
+      "speaker_id": 1
+    }
+  ],
+  "output_target_speakers": [
+    {
+      "speaker_id": 1,
+      "voice_key": "voice:Rachel",
+      "style": "feminine"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json In Progress Project
+{
+  "name": "My Project",
+  "source_lang": "en",
+  "target_lang": "fr-FR",
+  "mixing_mode": "voiceover_with_original_track",
+  "cost_minutes": 10,
+  "created_date": "2024-06-01T12:00:00Z",
+  "status": "in_progress",
+  "estimated_completion_date": "2024-06-05T12:00:00Z"
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Project
+{
+  "name": "My Project",
+  "source_lang": "en",
+  "target_lang": "fr-FR",
+  "mixing_mode": "voiceover_with_original_track",
+  "cost_minutes": 10,
+  "created_date": "2024-06-01T12:00:00Z",
+  "status": "error",
+  "error_message": "An error occurred during processing."
+}
+```
+</ResponseExample>

@@ -1,0 +1,206 @@
+---
+title: 'Create Re-translation'
+api: 'POST /api/v1/projects/{project_id}/translations'
+description: 'Modify project script and create new translation'
+---
+
+<Warning>
+Re-translation functionality is not available to all users by default. If you wish to use this feature, please contact us at [support@dubformer.ai](mailto:support@dubformer.ai).
+</Warning>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://app.dubformer.ai/api/v1/projects/{project_id}/translations \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "target_script": [
+      {
+        "start_ms": 100,
+        "end_ms": 1544,
+        "text": "Au revoir le monde!",
+        "speaker_id": 1
+      }
+    ],
+    "target_speakers": [
+      {
+        "speaker_id": 1,
+        "voice_key": "53f154:fr-FR-DeniseNeural",
+        "style": "feminine"
+      }
+    ],
+    "mixing_mode": "voiceover_only"
+  }'
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/projects/{project_id}/translations'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json',
+}
+data = {
+    "target_script": [
+        {
+            "start_ms": 100,
+            "end_ms": 1544,
+            "text": "Au revoir le monde!",
+            "speaker_id": 1
+        }
+    ],
+    "target_speakers": [
+        {
+            "speaker_id": 1,
+            "voice_key": "53f154:fr-FR-DeniseNeural",
+            "style": "feminine"
+        }
+    ],
+    "mixing_mode": "voiceover_only"
+}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/projects/{project_id}/translations';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json',
+};
+const data = {
+    target_script: [
+        {
+            start_ms: 100,
+            end_ms: 1544,
+            text: "Au revoir le monde!",
+            speaker_id: 1
+        }
+    ],
+    target_speakers: [
+        {
+            speaker_id: 1,
+            voice_key: "53f154:fr-FR-DeniseNeural",
+            style: "feminine"
+        }
+    ],
+    mixing_mode: "voiceover_only"
+};
+
+fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(data),
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier of the project to re-translate.
+</ParamField>
+
+## Request Body
+
+<ParamField body="target_script" type="array" required>
+  Array of target language script segments for dubbing.
+  <Expandable title="Script Object Properties">
+    <ParamField body="start_ms" type="number" required>
+      Start time in milliseconds.
+    </ParamField>
+    <ParamField body="end_ms" type="number" required>
+      End time in milliseconds.
+    </ParamField>
+    <ParamField body="text" type="string" required>
+      Text of the translation to synthesize.
+    </ParamField>
+    <ParamField body="speaker_id" type="number" required>
+      Speaker ID corresponding to target_speakers.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="target_speakers" type="array" required>
+  Array of target speaker configurations for dubbing.
+  <Expandable title="Speaker Object Properties">
+    <ParamField body="speaker_id" type="number" required>
+      Unique speaker identifier (must match script speaker_id values).
+    </ParamField>
+    <ParamField body="style" type="string" required>
+      Speaker style: `masculine` or `feminine`.
+    </ParamField>
+    <ParamField body="voice_key" type="string" required>
+      Voice identifier. Can be:
+      - `soundalike` for AI-generated voices matching original speakers
+      - `emotional_transfer` for emotional soundalike voices  
+      - Specific voice key from [Get Voices](/platform/endpoints/get-voices)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="mixing_mode" type="string" optional default="voiceover_with_original_track">
+  Audio mixing mode:
+  - `voiceover_only` - Only voiceover without the original track
+  - `voiceover_with_original_track` - Voiceover with the original track  
+  - `voiceover_without_original_voice` - Smart vocal removal dubbing
+</ParamField>
+
+<ParamField body="use_fixed_timings" type="boolean" optional default="false">
+  Whether to use fixed timings from the target script. By default, timings may be adjusted to fit the original video better.
+</ParamField>
+
+<ParamField body="tts_volume" type="string" optional default="normal">
+  TTS volume level: `very_quiet`, `quieter`, `normal`, `louder`, `very_loud`.
+</ParamField>
+
+## Response
+
+<ResponseField name="project_id" type="string">
+  Unique identifier for the project.
+</ResponseField>
+
+<ResponseField name="cost_minutes" type="number">
+  Number of minutes charged for this re-translation (typically 0).
+</ResponseField>
+
+<ResponseField name="estimated_completion_date" type="string">
+  ISO timestamp of estimated completion time.
+</ResponseField>
+
+<ResponseField name="balance_minutes" type="number">
+  Remaining balance in minutes.
+</ResponseField>
+
+<ResponseField name="translations_count" type="number">
+  Total number of translations for this project.
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "project_id": "12345",
+  "cost_minutes": 0,
+  "estimated_completion_date": "2024-06-05T12:00:00Z",
+  "balance_minutes": 90,
+  "translations_count": 1
+}
+```
+</ResponseExample>
+
+### Getting Original Script Data
+Use [Get Project](/platform/endpoints/projects/get-project) to retrieve the original `output_source_script`, `output_target_script`, and `output_target_speakers` as starting points for your re-translation.
+
+### Timing Considerations
+- `start_ms` and `end_ms` should align with natural speech boundaries
+- Large timing changes may affect lip-sync quality
+- Use `use_fixed_timings: true` to prevent automatic timing adjustments
+
+### Voice Selection
+- Use specific voice keys from [Get Voices](/platform/endpoints/get-voices) for consistent results
+- `soundalike` voices attempt to match original speaker characteristics
+- `emotional_transfer` provides more expression but may be less stable

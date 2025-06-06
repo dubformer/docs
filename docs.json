@@ -1,49 +1,92 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Dubformer Docs",
+  "name": "Dubformer API Docs",
   "colors": {
     "primary": "#3182CE",
     "light": "#5E9BDE",
     "dark": "#1A58A0"
   },
   "favicon": "/favicon.png",
+  "indexing": false,
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Overview",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Getting Started",
             "pages": [
-              "introduction"
+              "overview"
             ]
           }
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "Platform API",
         "groups": [
           {
-            "group": "Authentication",
+            "group": "Getting Started",
             "pages": [
-              "authentication"
+              "platform/overview",
+              "platform/authentication"
             ]
           },
           {
             "group": "Projects",
             "pages": [
-              "endpoints/projects/get-projects",
-              "endpoints/projects/get-project",
-              "endpoints/projects/create-project",
-              "endpoints/projects/get-project-video"
+              "platform/endpoints/projects/create-project",
+              "platform/endpoints/projects/get-project",
+              "platform/endpoints/projects/get-projects",
+              "platform/endpoints/projects/delete-project"
+            ]
+          },
+          {
+            "group": "Re-translations",
+            "pages": [
+              "platform/endpoints/projects/create-retranslation",
+              "platform/endpoints/projects/validate-retranslation"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "platform/endpoints/get-options",
+              "platform/endpoints/get-voices",
+              "platform/endpoints/get-balance"
+            ]
+          },
+          {
+            "group": "Error Handling",
+            "pages": [
+              "platform/errors"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Studio API",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "studio/authentication"
+            ]
+          },
+          {
+            "group": "Projects",
+            "pages": [
+              "studio/endpoints/projects/get-projects",
+              "studio/endpoints/projects/get-project",
+              "studio/endpoints/projects/create-project",
+              "studio/endpoints/projects/get-project-video"
             ]
           },
           {
             "group": "Artifacts",
             "pages": [
-              "endpoints/artifacts/get-artifact",
-              "endpoints/artifacts/create-artifact-upload"
+              "studio/endpoints/artifacts/get-artifact",
+              "studio/endpoints/artifacts/create-artifact-upload"
             ]
           }
         ]
@@ -51,11 +94,6 @@
     ],
     "global": {
       "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://docs.dubformer.ai",
-          "icon": "book-open-cover"
-        }
       ]
     }
   },

@@ -1,0 +1,104 @@
+---
+title: 'Get All Projects'
+api: 'GET /api/v1/projects'
+description: 'Retrieve a list of all projects'
+---
+
+
+
+<RequestExample>
+```bash cURL
+curl -X GET https://app.dubformer.ai/api/v1/projects \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/projects'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/projects';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+};
+
+fetch(url, {
+    method: 'GET',
+    headers,
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="projects" type="array">
+  Array of project objects with summary information.
+  <Expandable title="Project Object Properties">
+    <ResponseField name="project_id" type="string">
+      Unique identifier for the project.
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Name of the project.
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      Current status: `in_progress`, `ready`, or `error`.
+    </ResponseField>
+    <ResponseField name="source_lang" type="string">
+      Source language of the video.
+    </ResponseField>
+    <ResponseField name="target_lang" type="string">
+      Target language for dubbing.
+    </ResponseField>
+    <ResponseField name="cost_minutes" type="number">
+      Number of minutes charged for this project.
+    </ResponseField>
+    <ResponseField name="created_date" type="string">
+      ISO timestamp when the project was created.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "projects": [
+    {
+      "project_id": "12345",
+      "name": "Project 1",
+      "status": "ready",
+      "source_lang": "en",
+      "target_lang": "fr-FR",
+      "cost_minutes": 10,
+      "created_date": "2024-06-01T12:00:00Z"
+    },
+    {
+      "project_id": "67890", 
+      "name": "Project 2",
+      "status": "in_progress",
+      "source_lang": "fr",
+      "target_lang": "de-DE",
+      "cost_minutes": 15,
+      "created_date": "2024-06-02T12:00:00Z"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Filtering and Pagination
+
+Currently, the API returns all projects for your account. Filtering and pagination parameters may be added in future versions.
+
+<Note>
+For detailed project information including output files and scripts, use the [Get Project](/platform/endpoints/projects/get-project) endpoint with a specific project ID.
+</Note> 

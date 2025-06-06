@@ -1,0 +1,75 @@
+---
+title: 'Platform API Overview'
+description: 'Platform API overview and key concepts'
+---
+
+The Platform API provides direct access to Dubformer's video dubbing capabilities with full control over processing parameters. Perfect for developers building applications that need automated video localization.
+
+## Base URL
+
+```
+https://app.dubformer.ai/api/v1
+```
+
+## Key Features
+
+### 🎯 Direct Video Processing
+Submit video URLs and receive dubbed videos without intermediate steps.
+
+### 🎭 Advanced Voice Control
+- Choose specific voices from our voice library
+- Use soundalike voices for natural results
+- Enable emotional transfer for expressive dubbing
+
+### 🔊 Flexible Audio Mixing
+- **Voiceover Only**: Clean dubbed audio track
+- **Voiceover with Original**: Blend dubbed and original audio  
+- **Smart Vocal Removal**: Replace original speech while preserving background audio
+
+### 📝 Custom Content Support
+- Provide custom transcriptions
+- Upload translation glossaries  
+- Fine-tune timing and speaker assignments
+
+## What You Can Do
+
+1. **Create Dubbing Projects** - Submit videos with target language and preferences
+2. **Monitor Progress** - Track processing status in real-time
+3. **Download Results** - Get dubbed video files and audio tracks
+4. **Modify and Re-translate** - Update translations and regenerate audio
+5. **Manage Projects** - List, update, and delete your projects
+
+## Core Concepts
+
+### Projects
+A project represents a single video dubbing task with specific source and target languages.
+
+### Speakers
+Each speaker in the video can be assigned different voices and styles (masculine/feminine).
+
+### Mixing Modes
+Control how the dubbed audio is mixed with the original video:
+- `voiceover_only` - Only the dubbed voice
+- `voiceover_with_original_track` - Dubbed voice + original audio
+- `voiceover_without_original_voice` - Dubbed voice + background audio only
+
+### Voice Types
+- **Standard voices** - High-quality TTS voices
+- **Soundalike voices** - AI-generated voices that match original speaker characteristics  
+- **Emotional transfer** - Advanced soundalike with emotional expression
+
+## Supported Languages
+
+The Platform API supports:
+- **40+ source languages** for speech recognition
+- **100+ target languages** with locales for dubbing
+- Popular combinations like EN→ES, EN→FR, ES→EN, etc.
+
+Use the [Get Options](/platform/endpoints/get-options) endpoint to retrieve the full list.
+
+## Pricing Model
+
+Projects are billed based on video duration:
+- Charged per minute of processed video
+- Different rates for standard vs. soundalike voices
+- Check your balance with the [Get Balance](/platform/endpoints/get-balance) endpoint

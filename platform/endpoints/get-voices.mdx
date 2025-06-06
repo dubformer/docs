@@ -1,0 +1,129 @@
+---
+title: 'Get Voices'
+api: 'GET /api/v1/voices'
+description: 'Retrieve supported voices for re-translations'
+---
+
+
+
+<RequestExample>
+```bash cURL
+curl -X GET https://app.dubformer.ai/api/v1/voices \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/voices'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/voices';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+};
+
+fetch(url, {
+    method: 'GET',
+    headers,
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="voices" type="object">
+  Object with language codes as keys and arrays of voice objects as values.
+  <Expandable title="Voice Object Properties">
+    <ResponseField name="name" type="string">
+      Human-readable name of the voice.
+    </ResponseField>
+    <ResponseField name="voice_key" type="string">
+      Unique identifier for the voice to use in API requests.
+    </ResponseField>
+    <ResponseField name="style" type="string">
+      Voice style: `masculine` or `feminine`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "voices": {
+    "af-ZA": [
+      {
+        "name": "Adri",
+        "voice_key": "53f154:af-ZA-AdriNeural",
+        "style": "feminine"
+      },
+      {
+        "name": "Willem", 
+        "voice_key": "53f154:af-ZA-WillemNeural",
+        "style": "masculine"
+      }
+    ],
+    "en-US": [
+      {
+        "name": "Jenny",
+        "voice_key": "53f154:en-US-JennyNeural",
+        "style": "feminine"
+      },
+      {
+        "name": "Guy",
+        "voice_key": "53f154:en-US-GuyNeural", 
+        "style": "masculine"
+      },
+      {
+        "name": "Aria",
+        "voice_key": "53f154:en-US-AriaNeural",
+        "style": "feminine"
+      }
+    ],
+    "es-ES": [
+      {
+        "name": "Elvira",
+        "voice_key": "53f154:es-ES-ElviraNeural",
+        "style": "feminine"
+      },
+      {
+        "name": "Alvaro",
+        "voice_key": "53f154:es-ES-AlvaroNeural",
+        "style": "masculine"
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
+
+## Usage
+
+When [creating projects](/platform/endpoints/projects/create-project), the system automatically selects appropriate voices based on speaker detection and the target language. You don't need to specify voices explicitly.
+
+Use these voice keys when [creating re-translations](/platform/endpoints/projects/create-retranslation) to specify exact voices for each speaker.
+
+### Special Voice Keys
+In addition to the specific voices listed, you can use these special voice keys:
+
+- `soundalike` - Uses AI-generated voices that match the original speaker characteristics
+- `emotional_transfer` - Uses emotional soundalike voices (less stable but more expressive)
+
+## Voice Availability
+
+- Not all languages have the same number of available voices
+- Voice availability may vary based on your [subscription level](https://app.dubformer.ai/subscriptions)
+- New voices are added regularly as our TTS providers expand their offerings
+
+<Note>
+The voice list is continuously updated. Call this endpoint regularly to get the latest available voices for each language.
+</Note>
