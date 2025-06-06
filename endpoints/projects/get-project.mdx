@@ -1,0 +1,82 @@
+---
+title: 'Get Project'
+api: 'GET /api/v1/projects/{projectId}'
+description: 'Retrieve information about a specific project'
+---
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project to retrieve.
+</ParamField>
+
+## Response
+
+<ResponseField name="projectId" type="string">
+  Unique project identifier.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Project name.
+</ResponseField>
+
+<ResponseField name="projectUrl" type="string">
+  URL to access the project in the web app.
+</ResponseField>
+
+<ResponseField name="managerUrl" type="string">
+  Optional URL for project manager access.
+</ResponseField>
+
+<ResponseField name="videos" type="array">
+  List of video IDs in the project.
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if project creation encountered issues.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET \
+  https://api.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const projectId = 'proj_5f83a14b2ec1b';
+const response = await axios.get(
+  `https://api.dubformer.ai/api/v1/projects/${projectId}`,
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "projectId": "proj_5f83a14b2ec1b",
+  "name": "Marketing Campaign 2023",
+  "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
+  "managerUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b/manager",
+  "videos": [
+    "vid_7c92e3a1f56d8",
+    "vid_8d03f4b2g67e9"
+  ]
+}
+```
+</ResponseExample>
+
+## Usage Notes
+
+<Note>
+  Use this endpoint to get basic information about a project. For detailed information about each video, use the Get Project Video endpoint.
+</Note> 

@@ -1,0 +1,57 @@
+---
+title: 'Authentication'
+description: 'Learn how to authenticate with the Dubformer API'
+---
+
+# Authentication
+
+The Dubformer API uses API keys to authenticate requests. You can view and manage your API keys in the [Dubformer Studio Dashboard](https://studio.dubformer.ai/settings/api-keys).
+
+## API Keys
+
+All API requests must include your API key in the `Authorization` header:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+<Note>
+  Keep your API keys secure and do not share them in publicly accessible areas such as GitHub, client-side code, or public forums.
+</Note>
+
+## Example Request
+
+Here's an example request to list your projects:
+
+```bash
+curl -X GET \
+  https://api.dubformer.ai/api/v1/projects \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json'
+```
+
+## Rate Limiting
+
+The Dubformer API implements rate limiting to ensure fair usage and system stability. Current limits are:
+
+- 60 requests per minute per API key
+- 1000 requests per day per API key
+
+If you exceed these limits, you'll receive a `429 Too Many Requests` response. The response will include `Retry-After` header indicating how many seconds to wait before making another request.
+
+## Error Responses
+
+When authentication fails, you'll receive one of the following error responses:
+
+- **401 Unauthorized**: Your API key is missing or invalid
+- **403 Forbidden**: Your API key doesn't have permission to access the requested resource
+
+Example error response:
+
+```json
+{
+  "error": "Unauthorized",
+  "message": "Invalid API key provided",
+  "status": 401
+}
+``` 

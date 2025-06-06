@@ -1,0 +1,46 @@
+---
+title: 'Introduction'
+description: 'Welcome to the Dubformer API documentation'
+---
+
+# Dubformer API
+
+Welcome to the Dubformer API documentation. This API allows you to programmatically integrate with the Dubformer platform, enabling you to automate workflows for video localization including dubbing, voiceovers, and audio descriptions.
+
+## Overview
+
+Dubformer provides a comprehensive API for managing video processing tasks:
+
+- **Artifacts** - Upload and manage video, audio, and subtitle files
+- **Projects** - Create and manage projects with multiple videos and target languages
+- **Workflow Automation** - Configure automation levels for different processing stages
+
+## Base URL
+
+All API requests should be made to:
+
+```
+https://api.dubformer.ai/api/v1
+```
+
+## What You Can Do
+
+The Dubformer API enables you to:
+
+1. **Upload Media** - Upload source videos, background audio tracks, vocals-only audio, and source transcripts
+2. **Create Projects** - Set up new projects with specific processing requirements
+3. **Monitor Status** - Track the progress of your projects and videos
+4. **Download Results** - Retrieve completed subtitle files, audio tracks, and processed videos
+
+## Getting Started
+
+To get started with the Dubformer API:
+
+1. [Create an account](https://studio.dubformer.ai/signup) on Dubformer Studio
+2. Obtain your API credentials from the dashboard
+3. Learn how to [authenticate](/authentication) with the API
+4. Start making requests to the endpoints documented in this reference
+
+## Request Format
+
+All requests should use JSON for request bodies and form data for file uploads. Responses are returned in JSON format. 

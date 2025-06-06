@@ -1,0 +1,188 @@
+---
+title: 'Create Project'
+api: 'POST /api/v1/projects'
+description: 'Create a new video localization project with multiple target languages'
+---
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  Name of the project.
+</ParamField>
+
+<ParamField body="managerEmail" type="string">
+  Email of the project manager. If not provided, the default manager for your organization will be used.
+</ParamField>
+
+<ParamField body="videos" type="array" required>
+  Array of video configurations to be processed in the project.
+  
+  <Expandable title="Video Object Properties">
+    <ParamField body="name" type="string" required>
+      Name of the video.
+    </ParamField>
+    
+    <ParamField body="videoType" type="string" required>
+      Type of video processing needed. Must be one of:
+      - `dubbing` - Full dubbing with lip sync
+      - `voiceover` - Voice-over translation
+      - `audio_description` - Audio description for accessibility
+    </ParamField>
+    
+    <ParamField body="sourceVideoArtifactId" type="string" required>
+      ID of the uploaded source video artifact.
+    </ParamField>
+    
+    <ParamField body="backgroundAudioArtifactId" type="string">
+      Optional ID of music & effects (M&E) audio artifact.
+    </ParamField>
+    
+    <ParamField body="vocalsAudioArtifactId" type="string">
+      Optional ID of vocals-only audio artifact.
+    </ParamField>
+    
+    <ParamField body="sourceTranscriptArtifactId" type="string">
+      Optional ID of source transcript artifact.
+    </ParamField>
+    
+    <ParamField body="sourceLanguage" type="string" required>
+      Source language ISO 639-1 code (e.g., "en" for English).
+    </ParamField>
+    
+    <ParamField body="targetLanguages" type="array" required>
+      Array of target language ISO 639-1 codes.
+    </ParamField>
+    
+    <ParamField body="stages" type="object" required>
+      Configuration for processing stages.
+      
+      <Expandable title="Stages Configuration">
+        <ParamField body="transcription" type="object">
+          Configuration for the transcription stage.
+          Either `{ "automate": true }` to use automation, or `{ "assigneeEmail": "email@example.com" }` to assign to a specific person.
+        </ParamField>
+        
+        <ParamField body="translation" type="object">
+          Configuration for the translation stage.
+          Either `{ "automate": true }` to use automation, or `{ "assigneeEmail": "email@example.com" }` to assign to a specific person.
+        </ParamField>
+        
+        <ParamField body="voiceSelection" type="object">
+          Configuration for the voice selection stage.
+          Either `{ "automate": true }` to use automation, or `{ "assigneeEmail": "email@example.com" }` to assign to a specific person.
+        </ParamField>
+        
+        <ParamField body="lipSync" type="object">
+          Configuration for the lip sync stage (only applicable for dubbing).
+          Either `{ "automate": true }` to use automation, or `{ "assigneeEmail": "email@example.com" }` to assign to a specific person.
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="projectId" type="string">
+  Unique project identifier.
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Optional error message if creation encountered issues.
+</ResponseField>
+
+<ResponseField name="videos" type="array">
+  <Expandable title="Videos">
+    <ResponseField name="videoId" type="string">
+      Unique video identifier for each created video.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST \
+  https://api.dubformer.ai/api/v1/projects \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Marketing Campaign 2023",
+    "managerEmail": "manager@company.com",
+    "videos": [
+      {
+        "name": "Product Demo",
+        "videoType": "dubbing",
+        "sourceVideoArtifactId": "1a2b3c4d5e6f7g8h9i0j",
+        "backgroundAudioArtifactId": "2b3c4d5e6f7g8h9i0ja", 
+        "sourceLanguage": "en",
+        "targetLanguages": ["es", "fr", "de"],
+        "stages": {
+          "transcription": { "automate": true },
+          "translation": { "assigneeEmail": "translator@company.com" },
+          "voiceSelection": { "automate": true },
+          "lipSync": { "assigneeEmail": "editor@company.com" }
+        }
+      }
+    ]
+  }'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.post(
+  'https://api.dubformer.ai/api/v1/projects',
+  {
+    name: "Marketing Campaign 2023",
+    managerEmail: "manager@company.com",
+    videos: [
+      {
+        name: "Product Demo",
+        videoType: "dubbing",
+        sourceVideoArtifactId: "1a2b3c4d5e6f7g8h9i0j",
+        backgroundAudioArtifactId: "2b3c4d5e6f7g8h9i0ja",
+        sourceLanguage: "en",
+        targetLanguages: ["es", "fr", "de"],
+        stages: {
+          transcription: { automate: true },
+          translation: { assigneeEmail: "translator@company.com" },
+          voiceSelection: { automate: true },
+          lipSync: { assigneeEmail: "editor@company.com" }
+        }
+      }
+    ]
+  },
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "projectId": "proj_5f83a14b2ec1b",
+  "videos": [
+    {
+      "videoId": "vid_7c92e3a1f56d8"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Notes
+
+<Note>
+  For audio description type, the transcription and translation phases will be skipped, and AI-generated results will be used.
+</Note>
+
+<Note>
+  For dubbing projects, additional task types such as lip-sync and voice acting will become available.
+</Note> 

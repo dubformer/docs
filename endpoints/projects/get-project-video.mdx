@@ -1,0 +1,193 @@
+---
+title: 'Get Project Video'
+api: 'GET /api/v1/projects/{projectId}/videos/{videoId}'
+description: 'Retrieve detailed information about a specific video within a project'
+---
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project.
+</ParamField>
+
+<ParamField path="videoId" type="string" required>
+  The unique identifier of the video within the project.
+</ParamField>
+
+## Response
+
+<ResponseField name="projectId" type="string">
+  Unique project identifier.
+</ResponseField>
+
+<ResponseField name="videoId" type="string">
+  Unique video identifier.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Video name.
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Optional error message if processing encountered issues.
+</ResponseField>
+
+<ResponseField name="locales" type="object">
+  Status information organized by language locales.
+  <Expandable title="Locale Object (keys are ISO 639-1 language codes)">
+    <ResponseField name="tasks" type="array">
+      <Expandable title="Task Object">
+        <ResponseField name="taskId" type="string">
+          Unique task identifier.
+        </ResponseField>
+        
+        <ResponseField name="type" type="string">
+          Type of editor task. Possible values:
+          - `asr_correction` - Speech recognition correction
+          - `mt_correction` - Translation correction
+          - `voices_selection` - Voice selection
+          - `mt_final_touch` - Translation proofreading
+          - `tts_final_touch` - TTS proofreading
+          - `vc_tts` - Voice acting (TTS)
+          - `ad` - Audio description
+          - `mixing` - Audio mixing
+          - `manual_mixing` - Manual audio mixing
+          - `qc_proof_listening` - Internal QC
+          - `dsat_task` - Final QC
+          - `qc_mt` - Translation QC
+          - `qc_asr` - Transcription QC
+        </ResponseField>
+        
+        <ResponseField name="status" type="string">
+          Current status of the task. Possible values:
+          - `open` - Task is open
+          - `in_progress` - Task is in progress
+          - `review_requested` - Review requested
+          - `review_in_progress` - Review in progress
+          - `quality_evaluation` - QA in progress
+          - `fixes_required` - Fixes required
+          - `work_accepted` - Work accepted
+          - `completed` - Task completed
+          - `cancelled` - Task cancelled
+          - `upcoming` - Task is scheduled
+        </ResponseField>
+        
+        <ResponseField name="assigneeEmail" type="string">
+          Optional email of the task assignee.
+        </ResponseField>
+        
+        <ResponseField name="taskUrl" type="string">
+          Optional URL to access the task editor.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="resultSubtitlesArtifactId" type="string">
+      Optional result artifact ID for the subtitle file.
+    </ResponseField>
+    
+    <ResponseField name="resultAudioArtifactId" type="string">
+      Optional result artifact ID for the audio file.
+    </ResponseField>
+    
+    <ResponseField name="resultVideoArtifactId" type="string">
+      Optional result artifact ID for the video file.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET \
+  https://api.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7c92e3a1f56d8 \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const projectId = 'proj_5f83a14b2ec1b';
+const videoId = 'vid_7c92e3a1f56d8';
+const response = await axios.get(
+  `https://api.dubformer.ai/api/v1/projects/${projectId}/videos/${videoId}`,
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "projectId": "proj_5f83a14b2ec1b",
+  "videoId": "vid_7c92e3a1f56d8",
+  "name": "Product Demo",
+  "locales": {
+    "en": {
+      "tasks": [
+        {
+          "taskId": "task_8f74c2e9d3a5b",
+          "type": "asr_correction",
+          "status": "completed",
+          "assigneeEmail": "transcriber@company.com",
+          "taskUrl": "https://studio.dubformer.ai/tasks/task_8f74c2e9d3a5b"
+        }
+      ],
+      "resultSubtitlesArtifactId": "art_9e85d3f4c6b7a"
+    },
+    "es": {
+      "tasks": [
+        {
+          "taskId": "task_1a2b3c4d5e6f7",
+          "type": "mt_correction",
+          "status": "in_progress",
+          "assigneeEmail": "translator@company.com",
+          "taskUrl": "https://studio.dubformer.ai/tasks/task_1a2b3c4d5e6f7"
+        },
+        {
+          "taskId": "task_2b3c4d5e6f7g8",
+          "type": "voices_selection",
+          "status": "upcoming",
+          "taskUrl": "https://studio.dubformer.ai/tasks/task_2b3c4d5e6f7g8"
+        }
+      ]
+    },
+    "fr": {
+      "tasks": [
+        {
+          "taskId": "task_3c4d5e6f7g8h9",
+          "type": "mt_correction",
+          "status": "open",
+          "taskUrl": "https://studio.dubformer.ai/tasks/task_3c4d5e6f7g8h9"
+        }
+      ]
+    },
+    "de": {
+      "tasks": [
+        {
+          "taskId": "task_4d5e6f7g8h9i0",
+          "type": "mt_correction",
+          "status": "open",
+          "taskUrl": "https://studio.dubformer.ai/tasks/task_4d5e6f7g8h9i0"
+        }
+      ]
+    }
+  }
+}
+```
+</ResponseExample>
+
+## Usage Notes
+
+<Note>
+  Once results are available for a locale, you can use the artifact IDs to download the processed subtitles, audio files, and videos using the Get Artifact endpoint.
+</Note>
+
+<Note>
+  The task types and workflow stages available for a video depend on the video type (dubbing, voiceover, or audio description) specified during project creation.
+</Note> 

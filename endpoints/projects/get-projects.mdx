@@ -1,0 +1,73 @@
+---
+title: 'List Projects'
+api: 'GET /api/v1/projects'
+description: 'Retrieve a list of all projects'
+---
+
+This endpoint returns a list of all projects that the authenticated user has access to.
+
+## Response
+
+<ResponseField name="projects" type="array">
+  <Expandable title="Project Object">
+    <ResponseField name="projectId" type="string">
+      Unique project identifier.
+    </ResponseField>
+    
+    <ResponseField name="name" type="string">
+      Project name.
+    </ResponseField>
+    
+    <ResponseField name="projectUrl" type="string">
+      URL to access the project in the web app.
+    </ResponseField>
+    
+    <ResponseField name="managerUrl" type="string">
+      Optional URL for project manager access.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET \
+  https://api.dubformer.ai/api/v1/projects \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.get(
+  'https://api.dubformer.ai/api/v1/projects',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "projects": [
+    {
+      "projectId": "proj_5f83a14b2ec1b",
+      "name": "Marketing Campaign 2023",
+      "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
+      "managerUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b/manager"
+    },
+    {
+      "projectId": "proj_6e74b25c3fd2a",
+      "name": "Company Training Videos",
+      "projectUrl": "https://studio.dubformer.ai/projects/proj_6e74b25c3fd2a",
+      "managerUrl": "https://studio.dubformer.ai/projects/proj_6e74b25c3fd2a/manager"
+    }
+  ]
+}
+```
+</ResponseExample> 

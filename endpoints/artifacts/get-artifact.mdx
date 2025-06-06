@@ -1,0 +1,63 @@
+---
+title: 'Get Artifact'
+api: 'GET /api/v1/artifacts/{artifactId}'
+description: 'Retrieve information about an artifact and get a download URL'
+---
+
+## Path Parameters
+
+<ParamField path="artifactId" type="string" required>
+  The unique identifier of the artifact to retrieve.
+</ParamField>
+
+## Response
+
+<ResponseField name="downloadUrl" type="string">
+  Presigned URL for downloading the entire file.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET \
+  https://api.dubformer.ai/api/v1/artifacts/1a2b3c4d5e6f7g8h9i0j \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const artifactId = '1a2b3c4d5e6f7g8h9i0j';
+const response = await axios.get(
+  `https://api.dubformer.ai/api/v1/artifacts/${artifactId}`,
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "downloadUrl": "https://storage.dubformer.ai/artifacts/1a2b3c4d5e6f7g8h9i0j?signed=..."
+}
+```
+</ResponseExample>
+
+## Download the file
+
+After receiving the response with the presigned download URL, you can download the file:
+
+```bash
+curl -X GET \
+  "https://storage.dubformer.ai/artifacts/1a2b3c4d5e6f7g8h9i0j?signed=..." \
+  -o downloaded_file.mp4
+```
+
+<Note>
+  The download URL is typically valid for a limited time (usually 24 hours). If you need to download the file later, request a new download URL.
+</Note> 
