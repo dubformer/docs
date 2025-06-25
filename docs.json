@@ -113,5 +113,12 @@
     "socials": {
       "linkedin": "https://linkedin.com/company/dubformer"
     }
+  },
+  "api": {
+    "mdx": {
+      "auth": {
+        "method": "bearer"
+      }
+    } 
   }
 }
