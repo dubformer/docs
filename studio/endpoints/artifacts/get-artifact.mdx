@@ -19,7 +19,7 @@ description: 'Retrieve information about an artifact and get a download URL'
 <RequestExample>
 ```bash cURL
 curl -X GET \
-  https://api.dubformer.ai/api/v1/artifacts/1a2b3c4d5e6f7g8h9i0j \
+  https://studio.dubformer.ai/api/v1/artifacts/1a2b3c4d5e6f7g8h9i0j \
   -H 'Authorization: Bearer YOUR_API_KEY'
 ```
 
@@ -28,7 +28,7 @@ import axios from 'axios';
 
 const artifactId = '1a2b3c4d5e6f7g8h9i0j';
 const response = await axios.get(
-  `https://api.dubformer.ai/api/v1/artifacts/${artifactId}`,
+  `https://studio.dubformer.ai/api/v1/artifacts/${artifactId}`,
   {
     headers: {
       'Authorization': 'Bearer YOUR_API_KEY'

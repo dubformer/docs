@@ -74,19 +74,30 @@
             ]
           },
           {
-            "group": "Projects",
+            "group": "Artifacts",
             "pages": [
-              "studio/endpoints/projects/get-projects",
-              "studio/endpoints/projects/get-project",
-              "studio/endpoints/projects/create-project",
-              "studio/endpoints/projects/get-project-video"
+              "studio/endpoints/artifacts/create-artifact-upload",
+              "studio/endpoints/artifacts/get-artifact"
             ]
           },
           {
-            "group": "Artifacts",
+            "group": "Projects",
             "pages": [
-              "studio/endpoints/artifacts/get-artifact",
-              "studio/endpoints/artifacts/create-artifact-upload"
+              "studio/endpoints/projects/create-project",
+              "studio/endpoints/projects/get-project",
+              "studio/endpoints/projects/list-projects",
+              "studio/endpoints/projects/update-project",
+              "studio/endpoints/projects/delete-project"
+            ]
+          },
+          {
+            "group": "Project Videos",
+            "pages": [
+              "studio/endpoints/videos/create-project-video",
+              "studio/endpoints/videos/get-project-video",
+              "studio/endpoints/videos/list-project-videos",
+              "studio/endpoints/videos/update-project-video",
+              "studio/endpoints/videos/delete-project-video"
             ]
           }
         ]

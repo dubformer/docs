@@ -1,0 +1,138 @@
+---
+title: 'Update Project Video'
+api: 'PATCH /api/projects/{projectId}/videos/{videoId}'
+description: 'Update a video in a project'
+---
+
+This endpoint allows you to update various properties of a video in a project: name, translation languages, processing type, status, and remark.
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project.
+</ParamField>
+
+<ParamField path="videoId" type="string" required>
+  The unique identifier of the video to update.
+</ParamField>
+
+## Request Body
+
+<ParamField body="name" type="string" optional>
+  New name for the video.
+</ParamField>
+<ParamField body="dstLangs" type="string[]" optional>
+  New translation languages for the video.
+</ParamField>
+<ParamField body="processingType" type="string" optional>
+  New processing type for the video.
+</ParamField>
+<ParamField body="status" type="string" optional>
+  New status for the video.
+</ParamField>
+<ParamField body="remark" type="string" optional>
+  New remark for the video.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X PATCH \
+  https://studio.dubformer.ai/api/projects/PROJECT_ID/videos/VIDEO_ID \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "New video name",
+    "dstLangs": ["en", "fr"],
+    "processingType": "standard",
+    "status": "in_progress",
+    "remark": "Updated video description"
+  }'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.patch(
+  'https://studio.dubformer.ai/api/projects/PROJECT_ID/videos/VIDEO_ID',
+  {
+    name: 'New video name',
+    dstLangs: ['en', 'fr'],
+    processingType: 'standard',
+    status: 'in_progress',
+    remark: 'Updated video description'
+  },
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    }
+  }
+);
+
+console.log(response.data); // updated video object
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="id" type="string" required>
+  The unique identifier of the video.
+</ResponseField>
+<ResponseField name="name" type="string" required>
+  The name of the video.
+</ResponseField>
+<ResponseField name="status" type="string" required>
+  The status of the video.
+</ResponseField>
+<ResponseField name="processingType" type="string" required>
+  The processing type of the video.
+</ResponseField>
+<ResponseField name="srcLang" type="string" required>
+  The source language of the video.
+</ResponseField>
+<ResponseField name="dstLangs" type="string[]" required>
+  The translation languages of the video.
+</ResponseField>
+<ResponseField name="videoUrl" type="string" required>
+  The URL of the video file.
+</ResponseField>
+<ResponseField name="remark" type="string" optional>
+  The remark for the video.
+</ResponseField>
+<ResponseField name="createdAt" type="string" required>
+  Creation timestamp.
+</ResponseField>
+<ResponseField name="updatedAt" type="string" required>
+  Last update timestamp.
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "id": "vid_7a92c36d4fe3c",
+  "name": "New video name",
+  "status": "in_progress",
+  "processingType": "standard",
+  "srcLang": "ru",
+  "dstLangs": ["en", "fr"],
+  "videoUrl": "https://...",
+  "remark": "Updated video description",
+  "createdAt": "2024-06-01T12:00:00.000Z",
+  "updatedAt": "2024-06-01T12:34:56.000Z"
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "No valid fields to update"
+}
+```
+</ResponseExample>
+
+## Notes
+
+- You can update one or several fields in a single request
+- The video must exist and belong to a project that you have access to
+- The response format matches the get-project-video endpoint 

@@ -1,0 +1,104 @@
+---
+title: 'Get Project Video'
+api: 'GET /api/v1/projects/{projectId}/videos/{videoId}'
+description: 'Retrieve details of a specific video in a project'
+---
+
+This endpoint returns detailed information about a specific video within a project.
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project.
+</ParamField>
+
+<ParamField path="videoId" type="string" required>
+  The unique identifier of the video.
+</ParamField>
+
+## Response
+
+The response is a JSON object with the following fields:
+
+<ResponseField name="id" type="string">
+  Unique video identifier.
+</ResponseField>
+<ResponseField name="name" type="string">
+  Name of the video.
+</ResponseField>
+<ResponseField name="status" type="string">
+  Current status of the video (e.g., 'new', 'in_progress', 'completed').
+</ResponseField>
+<ResponseField name="processingType" type="string">
+  Type of video processing (e.g., 'dubbing', 'voiceover', 'audio_description').
+</ResponseField>
+<ResponseField name="srcLang" type="string">
+  Source language code.
+</ResponseField>
+<ResponseField name="dstLangs" type="array">
+  Array of target language codes.
+</ResponseField>
+<ResponseField name="videoUrl" type="string">
+  URL to the video resource.
+</ResponseField>
+<ResponseField name="videoDuration" type="number">
+  Duration of the video in seconds (if available).
+</ResponseField>
+<ResponseField name="remark" type="string">
+  Additional remarks about the video (if any).
+</ResponseField>
+<ResponseField name="createdAt" type="string">
+  ISO timestamp of creation.
+</ResponseField>
+<ResponseField name="updatedAt" type="string">
+  ISO timestamp of last update.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.get(
+  'https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "id": "vid_7a92c36d4fe3c",
+  "name": "Marketing Video 1",
+  "status": "completed",
+  "processingType": "dubbing",
+  "srcLang": "en",
+  "dstLangs": ["es-ES", "fr-FR"],
+  "videoUrl": "https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c",
+  "videoDuration": 123.45,
+  "remark": "Some remark",
+  "createdAt": "2023-12-01T10:30:00.000Z",
+  "updatedAt": "2023-12-01T15:45:00.000Z"
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Not Found"
+}
+```
+</ResponseExample> 

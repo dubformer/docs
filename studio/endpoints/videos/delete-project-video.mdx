@@ -1,0 +1,69 @@
+---
+title: 'Delete Project Video'
+api: 'DELETE /api/projects/{projectId}/videos/{videoId}'
+description: 'Delete a video from a project'
+---
+
+This endpoint allows you to delete a video from a project. The video will be marked as deleted and become unavailable.
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project.
+</ParamField>
+
+<ParamField path="videoId" type="string" required>
+  The unique identifier of the video to delete.
+</ParamField>
+
+## Response
+
+<ResponseField name="deleted" type="boolean" required>
+  Will be true if the video was deleted successfully.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE \
+  https://studio.dubformer.ai/api/projects/PROJECT_ID/videos/VIDEO_ID \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.delete(
+  'https://studio.dubformer.ai/api/projects/PROJECT_ID/videos/VIDEO_ID',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    }
+  }
+);
+
+console.log(response.data); // { deleted: true }
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "deleted": true
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Not Found"
+}
+```
+</ResponseExample>
+
+## Notes
+
+- The video must exist and belong to a project that you have access to
+- The video will be marked as deleted and become unavailable
+- This operation is irreversible 

@@ -1,16 +1,14 @@
 ---
-title: 'Get Project'
-api: 'GET https://studio.dubformer.ai/api/v1/projects/{projectId}'
-description: 'Retrieve information about a specific project'
+title: 'List Projects'
+api: 'GET https://studio.dubformer.ai/api/v1/projects'
+description: 'Retrieve a list of all projects'
 ---
 
-## Path Parameters
-
-<ParamField path="projectId" type="string" required>
-  The unique identifier of the project to retrieve.
-</ParamField>
+This endpoint returns a list of all projects that the authenticated user has access to.
 
 ## Response
+
+Returns an array of project objects, each containing the following fields:
 
 <ResponseField name="id" type="string">
   Unique project identifier.
@@ -55,16 +53,15 @@ description: 'Retrieve information about a specific project'
 <RequestExample>
 ```bash cURL
 curl -X GET \
-  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b \
+  https://studio.dubformer.ai/api/v1/projects \
   -H 'Authorization: Bearer YOUR_API_KEY'
 ```
 
 ```typescript TypeScript
 import axios from 'axios';
 
-const projectId = 'proj_5f83a14b2ec1b';
 const response = await axios.get(
-  `https://studio.dubformer.ai/api/v1/projects/${projectId}`,
+  'https://studio.dubformer.ai/api/v1/projects',
   {
     headers: {
       'Authorization': 'Bearer YOUR_API_KEY'
@@ -78,23 +75,41 @@ console.log(response.data);
 
 <ResponseExample>
 ```json Response
-{
-  "id": "proj_5f83a14b2ec1b",
-  "name": "Marketing Campaign 2023",
-  "status": "new",
-  "translationGlossary": "gloss_5f83a14b2ec1b",
-  "voicesGlossary": "voices_7c92e3a1f56d8",
-  "remark": "Urgent project for Q4 launch",
-  "clientName": "Acme Corp",
-  "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
-  "createdAt": "2023-12-01T10:00:00.000Z",
-  "updatedAt": "2023-12-01T15:30:00.000Z"
-}
+[
+  {
+    "id": "proj_5f83a14b2ec1b",
+    "name": "Marketing Campaign 2023",
+    "status": "new",
+    "translationGlossary": "gloss_5f83a14b2ec1b",
+    "voicesGlossary": "voices_7c92e3a1f56d8",
+    "remark": "Urgent project for Q4 launch",
+    "clientName": "Acme Corp",
+    "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
+    "createdAt": "2023-12-01T10:00:00.000Z",
+    "updatedAt": "2023-12-01T15:30:00.000Z"
+  },
+  {
+    "id": "proj_6e74b25c3fd2a",
+    "name": "Company Training Videos",
+    "status": "in_progress",
+    "translationGlossary": null,
+    "voicesGlossary": null,
+    "remark": null,
+    "clientName": "Internal",
+    "projectUrl": "https://studio.dubformer.ai/projects/proj_6e74b25c3fd2a",
+    "createdAt": "2023-11-15T08:00:00.000Z",
+    "updatedAt": "2023-12-01T12:00:00.000Z"
+  }
+]
 ```
 </ResponseExample>
 
-## Usage Notes
+## Notes
 
 <Note>
-  Use this endpoint to get basic information about a project. For detailed information about each video, use the Get Project Video endpoint.
+  Projects are returned in descending order by creation date (newest first).
+</Note>
+
+<Note>
+  Only projects belonging to the authenticated user's company are returned.
 </Note> 

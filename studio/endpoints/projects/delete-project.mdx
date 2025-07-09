@@ -1,0 +1,57 @@
+---
+title: 'Delete Project'
+api: 'DELETE https://studio.dubformer.ai/api/v1/projects/{projectId}'
+description: 'Delete a specific project'
+---
+
+This endpoint allows you to delete a project. The project will be marked as deleted and will no longer be accessible through the API.
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project to delete.
+</ParamField>
+
+## Response
+
+<ResponseField name="deleted" type="boolean">
+  Indicates whether the project was successfully deleted. Always `true` on success.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.delete(
+  'https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "deleted": true
+}
+```
+</ResponseExample>
+
+## Notes
+
+- Once a project is deleted, it cannot be recovered
+- Deleted projects will not appear in the list of projects
+- All associated data (videos, translations, etc.) will be marked as deleted
+- The project ID will remain valid for reference purposes but the project will be inaccessible 

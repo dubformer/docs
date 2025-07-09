@@ -1,25 +1,31 @@
 ---
-title: 'Create Project'
-api: 'POST https://studio.dubformer.ai/api/v1/projects'
-description: 'Create a new project with general project information'
+title: 'Update Project'
+api: 'PATCH https://studio.dubformer.ai/api/v1/projects/{projectId}'
+description: 'Update basic information of an existing project'
 ---
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  Unique identifier of the project to update.
+</ParamField>
 
 ## Request Body
 
-<ParamField body="name" type="string" required>
-  Name of the project.
+<ParamField body="name" type="string">
+  New name for the project.
 </ParamField>
 
 <ParamField body="managerEmail" type="string">
-  Email of the project manager. If not provided, the API key user will be used as the manager.
+  Email of the new project manager. The manager must belong to the same company as the API key user.
 </ParamField>
 
 <ParamField body="translationsGlossaryId" type="string">
-  Optional ID of a translation glossary to be used for this project.
+  ID of a translation glossary to be used for this project. Pass empty string to remove.
 </ParamField>
 
 <ParamField body="voicesGlossaryId" type="string">
-  Optional ID of a voices glossary to be used for this project.
+  ID of a voices glossary to be used for this project. Pass empty string to remove.
 </ParamField>
 
 ## Response
@@ -66,28 +72,28 @@ description: 'Create a new project with general project information'
 
 <RequestExample>
 ```bash cURL
-curl -X POST \
-  https://studio.dubformer.ai/api/v1/projects \
+curl -X PATCH \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b \
   -H 'Authorization: Bearer YOUR_API_KEY' \
   -H 'Content-Type: application/json' \
   -d '{
-    "name": "Marketing Campaign 2023",
-    "managerEmail": "manager@company.com",
-    "translationsGlossaryId": "gloss_5f83a14b2ec1b",
-    "voicesGlossaryId": "voices_7c92e3a1f56d8"
+    "name": "Updated Marketing Campaign 2023",
+    "managerEmail": "new.manager@company.com",
+    "translationsGlossaryId": "gloss_new_5f83a14b2ec1b",
+    "voicesGlossaryId": ""
   }'
 ```
 
 ```typescript TypeScript
 import axios from 'axios';
 
-const response = await axios.post(
-  'https://studio.dubformer.ai/api/v1/projects',
+const response = await axios.patch(
+  'https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b',
   {
-    name: "Marketing Campaign 2023",
-    managerEmail: "manager@company.com",
-    translationsGlossaryId: "gloss_5f83a14b2ec1b",
-    voicesGlossaryId: "voices_7c92e3a1f56d8"
+    name: "Updated Marketing Campaign 2023",
+    managerEmail: "new.manager@company.com",
+    translationsGlossaryId: "gloss_new_5f83a14b2ec1b",
+    voicesGlossaryId: ""
   },
   {
     headers: {
@@ -105,15 +111,15 @@ console.log(response.data);
 ```json Response
 {
   "id": "proj_5f83a14b2ec1b",
-  "name": "Marketing Campaign 2023",
+  "name": "Updated Marketing Campaign 2023",
   "status": "new",
-  "translationGlossary": "gloss_5f83a14b2ec1b",
-  "voicesGlossary": "voices_7c92e3a1f56d8",
+  "translationGlossary": "gloss_new_5f83a14b2ec1b",
+  "voicesGlossary": null,
   "remark": null,
   "clientName": null,
   "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
   "createdAt": "2023-12-01T10:00:00.000Z",
-  "updatedAt": "2023-12-01T10:00:00.000Z"
+  "updatedAt": "2023-12-01T16:45:00.000Z"
 }
 ```
 </ResponseExample>
@@ -121,13 +127,13 @@ console.log(response.data);
 ## Notes
 
 <Note>
-  This endpoint creates a project with basic information only. Videos can be added to the project using separate video management endpoints.
+  This endpoint updates only basic project information. Videos can be managed using separate video management endpoints.
 </Note>
 
 <Note>
-  The project manager must belong to the same company as the API key user. If no manager email is provided, the API key user will be assigned as the project manager.
+  The project manager must belong to the same company as the API key user. If the specified manager is not found or doesn't belong to the same company, the request will fail.
 </Note>
 
 <Note>
-  Translation and voices glossaries are optional but must exist and be accessible to your organization if provided.
-</Note> 
+  Translation and voices glossaries must exist and be accessible to your organization if provided. Pass an empty string to remove an existing glossary assignment.
+</Note>

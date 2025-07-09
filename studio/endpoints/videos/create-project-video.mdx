@@ -1,0 +1,177 @@
+---
+title: 'Create Project Video'
+api: 'POST /api/v1/projects/{projectId}/videos/create'
+description: 'Add a new video to an existing project'
+---
+
+This endpoint allows you to add a new video to an existing project. The video will be uploaded to the pipeline for processing.
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project.
+</ParamField>
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  Name of the video.
+</ParamField>
+
+<ParamField body="workflowType" type="string" required>
+  Type of video processing (e.g., 'dubbing', 'voiceover', 'audio_description').
+</ParamField>
+
+<ParamField body="originalVideoArtifactId" type="string" required>
+  Artifact ID of the original video (must be uploaded beforehand).
+</ParamField>
+
+<ParamField body="sourceLanguage" type="string" required>
+  Source language code (e.g., 'en', 'ru').
+</ParamField>
+
+<ParamField body="targetLanguages" type="array" required>
+  Array of target language codes (e.g., ['es-ES', 'fr-FR']).
+</ParamField>
+
+<ParamField body="backgroundWavArtifactId" type="string">
+  Artifact ID of the background audio (optional).
+</ParamField>
+
+<ParamField body="internationalMixWavArtifactId" type="string">
+  Artifact ID of the international mix audio (optional).
+</ParamField>
+
+<ParamField body="vocalsHitlWavArtifactId" type="string">
+  Artifact ID of the vocals HITL audio (optional).
+</ParamField>
+
+<ParamField body="remark" type="string">
+  Additional remarks about the video (optional).
+</ParamField>
+
+<ParamField body="pipelineOptions" type="object">
+  Pipeline configuration options (see below, all fields optional):
+  <ul>
+    <li>shouldAutomateTranscription: boolean</li>
+    <li>shouldAutomateTranslation: boolean</li>
+    <li>shouldAutomateVoiceSelection: boolean</li>
+  </ul>
+</ParamField>
+
+<Note>
+  If you automate transcription, you won't be able to edit the generated transcription in the future. The transcription phase will be skipped, and the result of the AI's work will be used.
+</Note>
+
+<RequestExample>
+```bash cURL
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "New Marketing Video",
+    "workflowType": "dubbing",
+    "originalVideoArtifactId": "artifact_1234567890",
+    "sourceLanguage": "en",
+    "targetLanguages": ["es-ES", "fr-FR"],
+    "pipelineOptions": {
+      "shouldAutomateTranscription": true,
+      "shouldAutomateTranslation": true,
+      "shouldAutomateVoiceSelection": false
+    },
+    "remark": "Optional comment"
+  }'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.post(
+  'https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create',
+  {
+    name: 'New Marketing Video',
+    workflowType: 'dubbing',
+    originalVideoArtifactId: 'artifact_1234567890',
+    sourceLanguage: 'en',
+    targetLanguages: ['es-ES', 'fr-FR'],
+    pipelineOptions: {
+      shouldAutomateTranscription: true,
+      shouldAutomateTranslation: true,
+      shouldAutomateVoiceSelection: false
+    },
+    remark: 'Optional comment'
+  },
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="id" type="string">
+  Unique identifier of the created video.
+</ResponseField>
+<ResponseField name="videoUrl" type="string">
+  URL to the created video resource.
+</ResponseField>
+<ResponseField name="name" type="string">
+  Name of the video.
+</ResponseField>
+<ResponseField name="status" type="string">
+  Status of the video (e.g., 'new').
+</ResponseField>
+<ResponseField name="workflowType" type="string">
+  Type of the video processing (e.g., 'dubbing').
+</ResponseField>
+<ResponseField name="srcLang" type="string">
+  Source language code.
+</ResponseField>
+<ResponseField name="dstLangs" type="array">
+  Array of target language codes.
+</ResponseField>
+<ResponseField name="videoDuration" type="number">
+  Duration of the video in seconds (if available).
+</ResponseField>
+<ResponseField name="remark" type="string">
+  Additional remarks about the video (if any).
+</ResponseField>
+<ResponseField name="createdAt" type="string">
+  ISO timestamp of creation.
+</ResponseField>
+<ResponseField name="updatedAt" type="string">
+  ISO timestamp of last update.
+</ResponseField>
+
+<ResponseExample>
+```json Response
+{
+  "id": "vid_7a92c36d4fe3c",
+  "videoUrl": "https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c",
+  "name": "New Marketing Video",
+  "status": "new",
+  "workflowType": "dubbing",
+  "srcLang": "en",
+  "dstLangs": ["es-ES", "fr-FR"],
+  "videoDuration": 123.45,
+  "remark": "Optional comment",
+  "createdAt": "2024-06-30T12:00:00.000Z",
+  "updatedAt": "2024-06-30T12:00:00.000Z"
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Bad Request"
+}
+```
+</ResponseExample>

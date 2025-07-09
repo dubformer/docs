@@ -1,6 +1,6 @@
 ---
 title: 'Create Artifact Upload'
-api: 'POST https://studio.dubformer.ai/api/v1/artifacts'
+api: 'POST https://studio.dubformer.ai/api/v1/artifacts/create'
 description: 'Create a new artifact upload request to upload media files'
 ---
 
@@ -31,7 +31,7 @@ description: 'Create a new artifact upload request to upload media files'
 <RequestExample>
 ```bash cURL
 curl -X POST \
-  https://api.dubformer.ai/api/v1/artifacts \
+  https://studio.dubformer.ai/api/v1/artifacts \
   -H 'Authorization: Bearer YOUR_API_KEY' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -44,7 +44,7 @@ curl -X POST \
 import axios from 'axios';
 
 const response = await axios.post(
-  'https://api.dubformer.ai/api/v1/artifacts',
+  'https://studio.dubformer.ai/api/v1/artifacts',
   {
     fileName: 'source_video.mp4',
     type: 'video'
