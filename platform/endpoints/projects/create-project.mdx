@@ -105,6 +105,10 @@ fetch(url, {
 <ParamField body="source_script_content" type="string" optional>
   Custom transcription of the source video in SRT, VTT, or plain text format.
   <Note>[Pro subscription](https://app.dubformer.ai/subscriptions) feature.</Note>
+  
+  **Timing and Speaker Behavior:**
+  - **Timings are NOT preserved** - Original timings are ignored and recalculated based on speech boundaries in audio for precise alignment
+  - **Speaker markup is NOT preserved** - Speaker tags (e.g., `<v Speaker1>`, `<v John>`) are ignored and not extracted as speaker information
 </ParamField>
 
 <ParamField body="glossary_content" type="string" optional>

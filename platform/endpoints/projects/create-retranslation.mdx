@@ -109,6 +109,11 @@ fetch(url, {
 
 <ParamField body="target_script" type="array" required>
   Array of target language script segments for dubbing.
+  
+  **Timing and Speaker Behavior:**
+  - **Speaker assignments are required** - Each `speaker_id` must correspond to a speaker in `target_speakers`. If not specified, the request will be rejected with validation error
+  - **Timings may be modified** - System adjusts timings to match synthesized speech length and avoid excessive speed changes, unless `use_fixed_timings: true` is set
+  
   <Expandable title="Script Object Properties">
     <ParamField body="start_ms" type="number" required>
       Start time in milliseconds.
