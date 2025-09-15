@@ -101,6 +101,30 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Emotion Transfer TTS API",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "emotional/overview",
+              "emotional/authentication"
+            ]
+          },
+          {
+            "group": "Voice Synthesis",
+            "pages": [
+              "emotional/endpoints/cloning-synthesize"
+            ]
+          },
+          {
+            "group": "Error Handling",
+            "pages": [
+              "emotional/errors"
+            ]
+          }
+        ]
       }
     ],
     "global": {

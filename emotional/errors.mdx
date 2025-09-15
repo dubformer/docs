@@ -1,0 +1,52 @@
+---
+title: 'Error Handling'
+description: 'Understanding API errors and how to handle them'
+---
+
+## Common Error Types
+
+### ValidationError
+Occurs when request parameters are invalid or missing.
+
+<ResponseExample>
+```json ValidationError Example
+{
+  "error": "ValidationError",
+  "message": "language is required"
+}
+```
+</ResponseExample>
+
+**Common causes:**
+- Missing required fields
+- Invalid language codes
+- Malformed request body
+- Invalid parameter values
+
+**How to fix:**
+- Check all required fields are provided
+- Validate language codes
+- Ensure request body is valid form-data
+
+### UnauthorizedError
+Occurs when authentication fails.
+
+<ResponseExample>
+```json UnauthorizedError Example
+{
+  "error": "UnauthorizedError", 
+  "message": "Invalid API key"
+}
+```
+</ResponseExample>
+
+**Common causes:**
+- Missing Authorization header
+- Invalid API key
+- Expired API key
+- Wrong API key for the environment
+
+**How to fix:**
+- Include `Authorization: Bearer YOUR_API_KEY` header
+- Verify your API key is correct and active
+- Generate a new API key if needed

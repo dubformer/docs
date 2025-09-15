@@ -1,0 +1,196 @@
+---
+title: 'Voice Cloning & Synthesis'
+api: 'POST https://app.dubformer.ai/api/v1/cloning/synthesize'
+description: 'Generate high-quality emotional text-to-speech with voice cloning capabilities'
+---
+
+The Voice Cloning & Synthesis API enables you to generate natural-sounding speech with emotional transfer capabilities. This advanced endpoint uses AI-powered voice cloning technology to synthesize speech that matches the characteristics and emotional tone of reference audio samples.
+
+<Note>
+This endpoint requires a PRO subscription or higher to access voice cloning features.
+</Note>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://app.dubformer.ai/api/v1/cloning/synthesize \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "text=Hello world, this is a test of our voice cloning technology!" \
+  -F "language=en-US" \
+  -F "reference_audio_files=@reference_voice_1.wav" \
+  -F "reference_audio_files=@reference_voice_2.wav"
+```
+
+```python Python
+import requests
+
+url = 'https://app.dubformer.ai/api/v1/cloning/synthesize'
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+}
+
+# Prepare the form data
+data = {
+    'text': 'Hello world, this is a test of our voice cloning technology!',
+    'language': 'en-US'
+}
+
+# Prepare the files (multiple reference audio files)
+files = [
+    ('reference_audio_files', open('reference_voice_1.wav', 'rb')),
+    ('reference_audio_files', open('reference_voice_2.wav', 'rb'))
+]
+
+response = requests.post(url, headers=headers, data=data, files=files)
+
+# Save the audio response
+with open('synthesized_audio.wav', 'wb') as f:
+    f.write(response.content)
+
+print(f"Audio saved with status: {response.status_code}")
+```
+
+```javascript JavaScript
+const url = 'https://app.dubformer.ai/api/v1/cloning/synthesize';
+const headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+};
+
+// Create form data
+const formData = new FormData();
+formData.append('text', 'Hello world, this is a test of our voice cloning technology!');
+formData.append('language', 'en-US');
+
+// Add reference audio file (assuming you have a file input element)
+const fileInput = document.getElementById('audioFile');
+if (fileInput.files[0]) {
+    formData.append('reference_audio_files', fileInput.files[0]);
+}
+
+fetch(url, {
+    method: 'POST',
+    headers,
+    body: formData,
+})
+.then(response => {
+    if (response.ok) {
+        return response.blob();
+    }
+    throw new Error('Network response was not ok');
+})
+.then(blob => {
+    // Create download link for the audio
+    const audioUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = audioUrl;
+    a.download = 'synthesized_audio.wav';
+    a.click();
+});
+```
+
+```typescript TypeScript
+interface ConditioningFeaturesOverride {
+    pitch_variance?: 'low' | 'medium' | 'high' | 'auto';
+    target_duration?: number | 'auto';
+}
+
+interface VoiceCloningRequest {
+    text: string;
+    language: string;
+    reference_audio_files: File[];
+}
+
+const url: string = 'https://app.dubformer.ai/api/v1/cloning/synthesize';
+const headers: Record<string, string> = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+};
+
+const formData = new FormData();
+const requestData: VoiceCloningRequest = {
+    text: 'Hello world, this is a test of our voice cloning technology!',
+    language: 'en-US',
+    reference_audio_files: []
+};
+
+formData.append('text', requestData.text);
+formData.append('language', requestData.language);
+
+const fileInput = document.getElementById('audioFile') as HTMLInputElement;
+if (fileInput?.files) {
+    Array.from(fileInput.files).forEach(file => {
+        formData.append('reference_audio_files', file);
+    });
+}
+
+fetch(url, {
+    method: 'POST',
+    headers,
+    body: formData,
+})
+.then((response: Response) => {
+    if (response.ok) {
+        return response.blob();
+    }
+    throw new Error('Network response was not ok');
+})
+.then((blob: Blob) => {
+    const audioUrl: string = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = audioUrl;
+    a.download = 'synthesized_audio.wav';
+    a.click();
+});
+```
+</RequestExample>
+
+## Request Parameters
+
+<ParamField body="text" type="string" required>
+  The text content to be synthesized into speech. Maximum length: 5000 characters.
+</ParamField>
+
+<ParamField body="language" type="string" required>
+  The target language for speech synthesis with locale (e.g., "en-US", "fr-FR", "es-ES").
+  Must match one of the supported languages from [Get Options](/platform/endpoints/get-options).
+</ParamField>
+
+<ParamField body="reference_audio_files" type="file[]" required>
+  One or more audio files containing reference voice samples for cloning. 
+  
+  **Supported formats:** WAV, MP3, M4A, FLAC  
+  **Maximum file size:** 50MB per file  
+  **Recommended length:** 3-30 seconds for optimal results  
+  **Quality requirements:** Clear audio with minimal background noise
+</ParamField>
+
+## Response
+
+### Success Response (200)
+
+<ResponseField name="audio" type="binary">
+  Synthesized audio as a binary WAV file.
+</ResponseField>
+
+**Content-Type:** `audio/wav`  
+**File Format:** 16-bit PCM WAV, 44.1kHz sample rate
+
+<ResponseExample>
+```bash Success Response
+# Binary WAV audio file is returned
+Content-Type: audio/wav
+Content-Length: 524288
+
+# Save to file
+curl -X POST https://app.dubformer.ai/api/v1/cloning/synthesize \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "text=Hello world!" \
+  -F "language=en-US" \
+  -F "reference_audio_files=@reference.wav" \
+  --output synthesized_audio.wav
+```
+
+```json Error Response
+{
+  "error": "Contact with sales manager for enable API"
+}
+```
+</ResponseExample>
