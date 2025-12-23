@@ -111,6 +111,27 @@ fetch(url, {
   - **Speaker markup is NOT preserved** - Speaker tags (e.g., `<v Speaker1>`, `<v John>`) are ignored and not extracted as speaker information
 </ParamField>
 
+<ParamField body="source_script" type="array" optional>
+  Structured source script with precise timings. Array of objects with `start_ms`, `end_ms`, and `text` fields.
+  Speakers will be determined automatically via biometrics.
+  <Note>[Pro subscription](https://app.dubformer.ai/subscriptions) feature.</Note>
+  
+  **Cannot be used together with `source_script_content`.**
+  
+  Example:
+  ```json
+  [
+    { "start_ms": 0, "end_ms": 2000, "text": "Hello world" },
+    { "start_ms": 2500, "end_ms": 5000, "text": "How are you?" }
+  ]
+  ```
+</ParamField>
+
+<ParamField body="use_fixed_timings" type="boolean" optional default="false">
+  When `true`, source timings from `source_script` will be preserved (no alignment or rechunking).
+  Useful when providing pre-translated scripts with `source_lang` = `target_lang`.
+</ParamField>
+
 <ParamField body="glossary_content" type="string" optional>
   Translation glossary in TSV format to ensure consistent terminology.
   <Note>[Pro subscription](https://app.dubformer.ai/subscriptions) feature.</Note>
