@@ -28,6 +28,12 @@ description: 'Update basic information of an existing project'
   ID of a voices glossary to be used for this project. Pass empty string to remove.
 </ParamField>
 
+<ParamField body="stringVariables" type="array">
+  Array of key-value pairs for storing project metadata. Pass this to update or replace existing metadata.
+
+  Each item should be an object with `key` and `value` properties (both strings).
+</ParamField>
+
 ## Response
 
 <ResponseField name="id" type="string">
@@ -70,6 +76,10 @@ description: 'Update basic information of an existing project'
   ISO 8601 timestamp when the project was last updated.
 </ResponseField>
 
+<ResponseField name="stringVariables" type="array | null">
+  Array of key-value pairs containing project metadata, if provided.
+</ResponseField>
+
 <RequestExample>
 ```bash cURL
 curl -X PATCH \
@@ -80,7 +90,11 @@ curl -X PATCH \
     "name": "Updated Marketing Campaign 2023",
     "managerEmail": "new.manager@company.com",
     "translationsGlossaryId": "gloss_new_5f83a14b2ec1b",
-    "voicesGlossaryId": ""
+    "voicesGlossaryId": "",
+    "stringVariables": [
+      { "key": "storyTitleId", "value": "67890" },
+      { "key": "updatedBy", "value": "api-user" }
+    ]
   }'
 ```
 
@@ -93,7 +107,11 @@ const response = await axios.patch(
     name: "Updated Marketing Campaign 2023",
     managerEmail: "new.manager@company.com",
     translationsGlossaryId: "gloss_new_5f83a14b2ec1b",
-    voicesGlossaryId: ""
+    voicesGlossaryId: "",
+    stringVariables: [
+      { key: "storyTitleId", value: "67890" },
+      { key: "updatedBy", value: "api-user" }
+    ]
   },
   {
     headers: {
@@ -115,11 +133,15 @@ console.log(response.data);
   "status": "new",
   "translationGlossary": "gloss_new_5f83a14b2ec1b",
   "voicesGlossary": null,
-  "remark": null,
+  "remark": "Created via Dubformer Studio API",
   "clientName": null,
   "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
   "createdAt": "2023-12-01T10:00:00.000Z",
-  "updatedAt": "2023-12-01T16:45:00.000Z"
+  "updatedAt": "2023-12-01T16:45:00.000Z",
+  "stringVariables": [
+    { "key": "storyTitleId", "value": "67890" },
+    { "key": "updatedBy", "value": "api-user" }
+  ]
 }
 ```
 </ResponseExample>
