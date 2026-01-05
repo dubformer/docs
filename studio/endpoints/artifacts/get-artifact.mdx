@@ -1,7 +1,7 @@
 ---
 title: 'Get Artifact'
 api: 'GET https://studio.dubformer.ai/api/v1/artifacts/{artifactId}'
-description: 'Retrieve information about an artifact and get a download URL'
+description: 'Retrieve detailed information about an artifact'
 ---
 
 ## Path Parameters
@@ -12,8 +12,51 @@ description: 'Retrieve information about an artifact and get a download URL'
 
 ## Response
 
-<ResponseField name="downloadUrl" type="string">
-  Presigned URL for downloading the entire file.
+<ResponseField name="id" type="string">
+  Unique identifier of the artifact.
+</ResponseField>
+
+<ResponseField name="fileName" type="string">
+  Original name of the uploaded file.
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Type of artifact. One of: `video`, `audio`, or `script`.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current upload/processing status. One of:
+  - `created` - Artifact created, upload pending
+  - `upload_started` - Upload in progress
+  - `upload_completed` - Upload and processing completed
+  - `upload_failed` - Upload or processing failed
+</ResponseField>
+
+<ResponseField name="uploadMethod" type="string">
+  Method used to upload the artifact. One of:
+  - `presigned_url` - Uploaded via presigned URL
+  - `direct_url` - Uploaded from external URL
+  - `fragments` - Created from concatenated fragments
+</ResponseField>
+
+<ResponseField name="size" type="number | null">
+  File size in bytes. Null if not yet processed.
+</ResponseField>
+
+<ResponseField name="duration" type="number | null">
+  Duration in seconds for video/audio artifacts. Null for script type or if not yet processed.
+</ResponseField>
+
+<ResponseField name="errorMessage" type="string | null">
+  Error message if upload/processing failed. Null if no error occurred.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string">
+  ISO timestamp when the artifact was created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string">
+  ISO timestamp when the artifact was last updated.
 </ResponseField>
 
 <RequestExample>
@@ -43,21 +86,20 @@ console.log(response.data);
 <ResponseExample>
 ```json Response
 {
-  "downloadUrl": "https://storage.dubformer.ai/artifacts/1a2b3c4d5e6f7g8h9i0j?signed=..."
+  "id": "1a2b3c4d5e6f7g8h9i0j",
+  "fileName": "source_video.mp4",
+  "type": "video",
+  "status": "upload_completed",
+  "uploadMethod": "presigned_url",
+  "size": 52428800,
+  "duration": 120.5,
+  "errorMessage": null,
+  "createdAt": "2023-12-31T12:00:00Z",
+  "updatedAt": "2023-12-31T12:05:30Z"
 }
 ```
 </ResponseExample>
 
-## Download the file
-
-After receiving the response with the presigned download URL, you can download the file:
-
-```bash
-curl -X GET \
-  "https://storage.dubformer.ai/artifacts/1a2b3c4d5e6f7g8h9i0j?signed=..." \
-  -o downloaded_file.mp4
-```
-
 <Note>
-  The download URL is typically valid for a limited time (usually 24 hours). If you need to download the file later, request a new download URL.
+  This endpoint returns metadata about the artifact. It does not include download URLs or internal storage paths for security reasons.
 </Note> 

@@ -6,74 +6,143 @@ description: 'Create a new artifact upload request to upload media files'
 
 ## Request Body
 
-<ParamField body="fileName" type="string" required>
-  File name of the artifact being uploaded. Can handle files up to 5GB.
+<Note>
+  Can handle files up to 5GB.
+</Note>
+
+<ParamField body="name" type="string" required>
+  Name of the artifact being uploaded. Can handle files up to 5GB.
 </ParamField>
 
 <ParamField body="type" type="string" required>
-  Type of artifact being uploaded. Must be one of: `video`, `audio`, or `subtitles`.
+  Type of artifact being uploaded. Must be one of: `video`, `audio`, or `script`.
+</ParamField>
+
+<Note>
+  Choose one upload method from the following options:
+  - **Presigned URL** - Don't include `url`, `s3Path`, or `fragments` parameters. We'll give you a temporary upload link.
+  - **Direct URL** - Provide a `url` where we can download the file from.
+  - **S3 Path** - Provide an `s3Path` to copy the file from your S3 bucket.
+  - **Fragments** - Provide a `fragments` array to combine multiple clips into one file.
+</Note>
+
+<ParamField body="url" type="string" optional>
+  Direct URL to download the artifact from an external source. Mutually exclusive with `s3Path` and `fragments`.
+</ParamField>
+
+<ParamField body="s3Path" type="string" optional>
+  S3 path to the artifact in your configured S3 storage. Requires S3 credentials to be configured for your API key. Mutually exclusive with `url` and `fragments`.
+</ParamField>
+
+<ParamField body="fragments" type="array" optional>
+  Array of media fragments to concatenate into a single artifact. Not supported for `script` type. Mutually exclusive with `url` and `s3Path`. Each fragment must contain:
+
+  - Either `url` (string) OR `s3Path` (string) - source location of the fragment
+  - `startTime` (number) - start time in seconds (must be >= 0)
 </ParamField>
 
 ## Response
 
 <ResponseField name="artifactId" type="string">
-  Unique identifier for the created artifact.
+  Unique identifier for the created artifact. Always returned.
 </ResponseField>
 
-<ResponseField name="uploadUrl" type="string">
-  Presigned URL for uploading the entire file.
+<ResponseField name="presignedUploadUrl" type="string">
+  Presigned URL for uploading the file. Only returned when using presigned upload method (no `url`, `s3Path`, or `fragments` specified).
 </ResponseField>
 
 <ResponseField name="expiresAt" type="string">
-  ISO timestamp when the upload URL expires.
+  ISO timestamp when the presigned upload URL expires. Only returned when using presigned upload method.
+</ResponseField>
+
+<ResponseField name="artifact" type="object">
+  Complete artifact object. Returned when using `url`, `s3Path`, or `fragments` upload methods. The artifact will be processed asynchronously.
 </ResponseField>
 
 <RequestExample>
-```bash cURL
+```bash Request (Presigned URL)
 curl -X POST \
-  https://studio.dubformer.ai/api/v1/artifacts \
+  https://studio.dubformer.ai/api/v1/artifacts/create \
   -H 'Authorization: Bearer YOUR_API_KEY' \
   -H 'Content-Type: application/json' \
   -d '{
-    "fileName": "source_video.mp4",
+    "name": "source_video.mp4",
     "type": "video"
   }'
 ```
 
-```typescript TypeScript
-import axios from 'axios';
+```bash Request (Direct URL)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/artifacts/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "source_video.mp4",
+    "type": "video",
+    "url": "https://example.com/video.mp4"
+  }'
+```
 
-const response = await axios.post(
-  'https://studio.dubformer.ai/api/v1/artifacts',
-  {
-    fileName: 'source_video.mp4',
-    type: 'video'
-  },
-  {
-    headers: {
-      'Authorization': 'Bearer YOUR_API_KEY',
-      'Content-Type': 'application/json'
-    }
-  }
-);
+```bash Request (S3 Path)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/artifacts/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "source_video.mp4",
+    "type": "video",
+    "s3Path": "s3://my-bucket/path/to/video.mp4"
+  }'
+```
 
-console.log(response.data);
+```bash Request (Fragments)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/artifacts/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "concatenated_video.mp4",
+    "type": "video",
+    "fragments": [
+      {
+        "url": "https://example.com/part1.mp4",
+        "startTime": 0
+      },
+      {
+        "url": "https://example.com/part2.mp4",
+        "startTime": 30
+      }
+    ]
+  }'
 ```
 </RequestExample>
 
 <ResponseExample>
-```json Response
+```json Response (Presigned URL)
 {
   "artifactId": "1a2b3c4d5e6f7g8h9i0j",
-  "uploadUrl": "https://storage.dubformer.ai/uploads/1a2b3c4d5e6f7g8h9i0j?signed=...",
+  "presignedUploadUrl": "https://storage.dubformer.ai/uploads/1a2b3c4d5e6f7g8h9i0j?signed=...",
   "expiresAt": "2023-12-31T23:59:59Z"
+}
+```
+
+```json Response (Direct URL, S3 Path, Fragments)
+{
+  "id": "1a2b3c4d5e6f7g8h9i0j",
+  "name": "source_video.mp4",
+  "type": "video",
+  "status": "pending",
+  "createdAt": "2023-12-31T12:00:00Z",
+  "s3Path": "uploads/1a2b3c4d5e6f7g8h9i0j/source_video.mp4"
 }
 ```
 </ResponseExample>
 
-## Upload the file
+## Upload Methods
 
-After receiving the response with the presigned URL, upload your file using a PUT request:
+### Presigned Upload
+
+When using presigned upload (no `url`, `s3Path`, or `fragments` in the request), you'll receive a `presignedUploadUrl`. Upload your file using a PUT request:
 
 ```bash
 curl -X PUT \
@@ -85,4 +154,20 @@ curl -X PUT \
 <Note>
   The upload URL is valid only for the specified time in the `expiresAt` field.
   Make sure to complete your upload before this time expires.
-</Note> 
+</Note>
+
+### URL Upload
+
+When providing a `url` parameter, the system will download the file from the specified URL asynchronously. The artifact will be created immediately with a `pending` status.
+
+### S3 Upload
+
+When providing an `s3Path` parameter, the system will copy the file from your configured S3 storage. This requires S3 credentials to be configured for your API key.
+
+### Fragment Concatenation
+
+When providing `fragments`, the system will download or copy each fragment and concatenate them into a single artifact. Each fragment must specify either a `url` or `s3Path`, and a `startTime`. This is not supported for `script` type artifacts.
+
+<Warning>
+  For URL, S3, and Fragment uploads, the artifact processing happens asynchronously. Monitor the artifact status to know when processing is complete.
+</Warning> 
