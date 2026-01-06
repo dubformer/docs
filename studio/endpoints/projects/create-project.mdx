@@ -22,20 +22,6 @@ description: 'Create a new project with general project information'
   Optional ID of a voices glossary to be used for this project.
 </ParamField>
 
-<ParamField body="stringVariables" type="array">
-  Optional array of key-value pairs for storing project metadata. Useful for storing external system references like backlinks, identifiers, or other custom metadata.
-
-  Each item should be an object with `key` and `value` properties (both strings).
-
-  Example:
-  ```json
-  [
-    { "key": "storyTitleId", "value": "12345" },
-    { "key": "storyDeeplink", "value": "https://..." }
-  ]
-  ```
-</ParamField>
-
 ## Response
 
 <ResponseField name="id" type="string">
@@ -78,10 +64,6 @@ description: 'Create a new project with general project information'
   ISO 8601 timestamp when the project was last updated.
 </ResponseField>
 
-<ResponseField name="stringVariables" type="array | null">
-  Array of key-value pairs containing project metadata, if provided.
-</ResponseField>
-
 <RequestExample>
 ```bash cURL
 curl -X POST \
@@ -92,12 +74,7 @@ curl -X POST \
     "name": "Marketing Campaign 2023",
     "managerEmail": "manager@company.com",
     "translationsGlossaryId": "gloss_5f83a14b2ec1b",
-    "voicesGlossaryId": "voices_7c92e3a1f56d8",
-    "stringVariables": [
-      { "key": "storyTitleId", "value": "12345" },
-      { "key": "storyItemCode", "value": "PYR_3345" },
-      { "key": "storyDeeplink", "value": "https://pyramid.dalet.euronews.tech?titleId=12345&kanbanViewId=7KV6cv" }
-    ]
+    "voicesGlossaryId": "voices_7c92e3a1f56d8"
   }'
 ```
 
@@ -110,12 +87,7 @@ const response = await axios.post(
     name: "Marketing Campaign 2023",
     managerEmail: "manager@company.com",
     translationsGlossaryId: "gloss_5f83a14b2ec1b",
-    voicesGlossaryId: "voices_7c92e3a1f56d8",
-    stringVariables: [
-      { key: "storyTitleId", value: "12345" },
-      { key: "storyItemCode", value: "PYR_3345" },
-      { key: "storyDeeplink", value: "https://pyramid.dalet.euronews.tech?titleId=12345&kanbanViewId=7KV6cv" }
-    ]
+    voicesGlossaryId: "voices_7c92e3a1f56d8"
   },
   {
     headers: {
@@ -141,12 +113,7 @@ console.log(response.data);
   "clientName": null,
   "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
   "createdAt": "2023-12-01T10:00:00.000Z",
-  "updatedAt": "2023-12-01T10:00:00.000Z",
-  "stringVariables": [
-    { "key": "storyTitleId", "value": "12345" },
-    { "key": "storyItemCode", "value": "PYR_3345" },
-    { "key": "storyDeeplink", "value": "https://pyramid.dalet.euronews.tech?titleId=12345&kanbanViewId=7KV6cv" }
-  ]
+  "updatedAt": "2023-12-01T10:00:00.000Z"
 }
 ```
 </ResponseExample>
@@ -164,7 +131,3 @@ console.log(response.data);
 <Note>
   Translation and voices glossaries are optional but must exist and be accessible to your organization if provided.
 </Note>
-
-<Note>
-  The `stringVariables` field is useful for storing external system references and metadata. Common use cases include storing backlinks to external project management systems (e.g., Dalet, Jira), content identifiers, or any other custom key-value metadata needed for integration purposes.
-</Note> 

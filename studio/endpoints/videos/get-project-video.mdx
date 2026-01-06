@@ -47,6 +47,9 @@ The response is a JSON object with the following fields:
 <ResponseField name="remark" type="string">
   Additional remarks about the video (if any).
 </ResponseField>
+<ResponseField name="stringVariables" type="array | null">
+  Array of key-value pairs containing video metadata, if provided.
+</ResponseField>
 <ResponseField name="createdAt" type="string">
   ISO timestamp of creation.
 </ResponseField>
@@ -89,6 +92,10 @@ console.log(response.data);
   "videoUrl": "https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c",
   "videoDuration": 123.45,
   "remark": "Some remark",
+  "stringVariables": [
+    { "key": "storyTitleId", "value": "12345" },
+    { "key": "storyItemCode", "value": "PYR_3345" }
+  ],
   "createdAt": "2023-12-01T10:30:00.000Z",
   "updatedAt": "2023-12-01T15:45:00.000Z"
 }

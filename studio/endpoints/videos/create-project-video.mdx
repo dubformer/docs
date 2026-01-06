@@ -50,6 +50,20 @@ This endpoint allows you to add a new video to an existing project. The video wi
   Additional remarks about the video (optional).
 </ParamField>
 
+<ParamField body="stringVariables" type="array">
+  Optional array of key-value pairs for storing video metadata. Useful for storing external system references like backlinks, identifiers, or other custom metadata.
+
+  Each item should be an object with `key` and `value` properties (both strings).
+
+  Example:
+  ```json
+  [
+    { "key": "storyTitleId", "value": "12345" },
+    { "key": "storyDeeplink", "value": "https://..." }
+  ]
+  ```
+</ParamField>
+
 <ParamField body="pipelineOptions" type="object">
   Pipeline configuration options (see below, all fields optional):
   <ul>
@@ -80,7 +94,11 @@ curl -X POST \
       "shouldAutomateTranslation": true,
       "shouldAutomateVoiceSelection": false
     },
-    "remark": "Optional comment"
+    "remark": "Optional comment",
+    "stringVariables": [
+      { "key": "storyTitleId", "value": "12345" },
+      { "key": "storyDeeplink", "value": "https://pyramid.dalet.euronews.tech?titleId=12345&kanbanViewId=7KV6cv" }
+    ]
   }'
 ```
 
@@ -100,7 +118,11 @@ const response = await axios.post(
       shouldAutomateTranslation: true,
       shouldAutomateVoiceSelection: false
     },
-    remark: 'Optional comment'
+    remark: 'Optional comment',
+    stringVariables: [
+      { key: "storyTitleId", value: "12345" },
+      { key: "storyDeeplink", value: "https://pyramid.dalet.euronews.tech?titleId=12345&kanbanViewId=7KV6cv" }
+    ]
   },
   {
     headers: {
@@ -143,6 +165,9 @@ console.log(response.data);
 <ResponseField name="remark" type="string">
   Additional remarks about the video (if any).
 </ResponseField>
+<ResponseField name="stringVariables" type="array | null">
+  Array of key-value pairs containing video metadata, if provided.
+</ResponseField>
 <ResponseField name="createdAt" type="string">
   ISO timestamp of creation.
 </ResponseField>
@@ -162,6 +187,10 @@ console.log(response.data);
   "dstLangs": ["es-ES", "fr-FR"],
   "videoDuration": 123.45,
   "remark": "Optional comment",
+  "stringVariables": [
+    { "key": "storyTitleId", "value": "12345" },
+    { "key": "storyDeeplink", "value": "https://pyramid.dalet.euronews.tech?titleId=12345&kanbanViewId=7KV6cv" }
+  ],
   "createdAt": "2024-06-30T12:00:00.000Z",
   "updatedAt": "2024-06-30T12:00:00.000Z"
 }

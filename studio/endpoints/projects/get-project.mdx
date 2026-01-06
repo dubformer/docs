@@ -52,10 +52,6 @@ description: 'Retrieve information about a specific project'
   ISO 8601 timestamp when the project was last updated.
 </ResponseField>
 
-<ResponseField name="stringVariables" type="array | null">
-  Array of key-value pairs containing project metadata, if provided.
-</ResponseField>
-
 <RequestExample>
 ```bash cURL
 curl -X GET \
@@ -92,11 +88,7 @@ console.log(response.data);
   "clientName": "Acme Corp",
   "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
   "createdAt": "2023-12-01T10:00:00.000Z",
-  "updatedAt": "2023-12-01T15:30:00.000Z",
-  "stringVariables": [
-    { "key": "storyTitleId", "value": "12345" },
-    { "key": "storyItemCode", "value": "PYR_3345" }
-  ]
+  "updatedAt": "2023-12-01T15:30:00.000Z"
 }
 ```
 </ResponseExample>
@@ -105,4 +97,4 @@ console.log(response.data);
 
 <Note>
   Use this endpoint to get basic information about a project. For detailed information about each video, use the Get Project Video endpoint.
-</Note> 
+</Note>
