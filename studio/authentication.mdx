@@ -39,15 +39,13 @@ If you exceed these limits, you'll receive a `429 Too Many Requests` response. T
 
 When authentication fails, you'll receive one of the following error responses:
 
-- **401 Unauthorized**: Your API key is missing or invalid
-- **403 Forbidden**: Your API key doesn't have permission to access the requested resource
+- **400 Bad Request**: Missing or invalid authorization token
+- **400 Bad Request**: Access denied to this project
 
 Example error response:
 
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid API key provided",
-  "status": 401
+  "error": "Missing or invalid authorization token"
 }
 ``` 

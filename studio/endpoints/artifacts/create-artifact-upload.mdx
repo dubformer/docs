@@ -1,7 +1,7 @@
 ---
-title: 'Create Artifact Upload'
+title: 'Create & Upload Artifact'
 api: 'POST https://studio.dubformer.ai/api/v1/artifacts/create'
-description: 'Create a new artifact upload request to upload media files'
+description: 'Create a new artifact and upload a source file'
 ---
 
 ## Request Body
@@ -11,28 +11,60 @@ description: 'Create a new artifact upload request to upload media files'
 </Note>
 
 <ParamField body="name" type="string" required>
-  Name of the artifact being uploaded. Can handle files up to 5GB.
+  Name of the artifact being uploaded. E.g. `source_video.mp4`
 </ParamField>
 
 <ParamField body="type" type="string" required>
   Type of artifact being uploaded. Must be one of: `video`, `audio`, or `script`.
 </ParamField>
 
+### Upload Methods
+
+Choose **one** of the following methods to provide your source file:
+
 <Note>
-  Choose one upload method from the following options:
-  - **Presigned URL** - Don't include `url`, `s3Path`, or `fragments` parameters. We'll give you a temporary upload link.
-  - **Direct URL** - Provide a `url` where we can download the file from.
-  - **S3 Path** - Provide an `s3Path` to copy the file from your S3 bucket.
-  - **Fragments** - Provide a `fragments` array to combine multiple clips into one file.
+  **1. Presigned URL (recommended for local files)**
+
+  Don't include any source parameters (`url`, `s3Path`, or `fragments`). We'll return a temporary presigned URL that you can use to upload your file directly to our storage using a PUT request.
+
+  **Best for:** Uploading files from your local machine or when you need full control over the upload process.
+</Note>
+
+<Note>
+  **2. Direct URL (download from web)**
+
+  Provide a `url` parameter with a publicly accessible link to your file. We'll download the file asynchronously from the provided URL.
+
+  **Best for:** When your file is already hosted somewhere (CDN, public cloud storage, etc.) and you want us to fetch it.
 </Note>
 
 <ParamField body="url" type="string" optional>
   Direct URL to download the artifact from an external source. Mutually exclusive with `s3Path` and `fragments`.
 </ParamField>
 
+<Note>
+  **3. S3 Path (copy from your S3 bucket)**
+
+  Provide an `s3Path` parameter pointing to a file in your AWS S3 bucket (e.g., `s3://my-bucket/path/to/video.mp4`). We'll copy the file directly from your S3 storage without downloading/re-uploading.
+
+  **Best for:** Files already stored in S3. This is the fastest method as it avoids internet transfers.
+
+  **Setup required:** You must first attach AWS S3 credentials to your API key in your dashboard settings.
+</Note>
+
 <ParamField body="s3Path" type="string" optional>
   S3 path to the artifact in your configured S3 storage. Requires S3 credentials to be configured for your API key. Mutually exclusive with `url` and `fragments`.
 </ParamField>
+
+<Note>
+  **4. Fragments (concatenate multiple clips)**
+
+  Provide a `fragments` array with multiple video/audio clips. We'll fetch each fragment (from URL or S3) and concatenate them into a single artifact. Each fragment must specify either `url` or `s3Path`, plus a `startTime`.
+
+  **Best for:** Combining multiple clips into one file before processing.
+
+  **Limitations:** Not supported for `script` type artifacts. All fragments must be in the same format (codec, resolution, frame rate).
+</Note>
 
 <ParamField body="fragments" type="array" optional>
   Array of media fragments to concatenate into a single artifact. Not supported for `script` type. Mutually exclusive with `url` and `s3Path`. Each fragment must contain:
@@ -41,22 +73,85 @@ description: 'Create a new artifact upload request to upload media files'
   - `startTime` (number) - start time in seconds (must be >= 0)
 </ParamField>
 
+<Tip>
+  **Using AWS S3?** To enable S3 uploads (method 3) or S3 fragments (method 4), attach your AWS credentials to your API key. You can configure this in your dashboard settings under API Keys → Select your key → S3 Credentials.
+</Tip>
+
+
 ## Response
 
+### Presigned Upload Response
+
 <ResponseField name="artifactId" type="string">
-  Unique identifier for the created artifact. Always returned.
+  Unique identifier for the created artifact.
 </ResponseField>
 
 <ResponseField name="presignedUploadUrl" type="string">
-  Presigned URL for uploading the file. Only returned when using presigned upload method (no `url`, `s3Path`, or `fragments` specified).
+  Presigned S3 URL for uploading the file via PUT request. Valid for limited time.
 </ResponseField>
 
 <ResponseField name="expiresAt" type="string">
-  ISO timestamp when the presigned upload URL expires. Only returned when using presigned upload method.
+  ISO 8601 timestamp when the presigned upload URL expires (typically 15 minutes from creation).
 </ResponseField>
 
-<ResponseField name="artifact" type="object">
-  Complete artifact object. Returned when using `url`, `s3Path`, or `fragments` upload methods. The artifact will be processed asynchronously.
+### Direct URL, S3 Path, and Fragments Response
+
+Returns a complete artifact object with the following fields:
+
+<ResponseField name="id" type="string">
+  Unique identifier for the artifact.
+</ResponseField>
+
+<ResponseField name="fileName" type="string">
+  Name of the uploaded file.
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Type of artifact: `video`, `audio`, or `script`.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current processing status. Initial value is `created`. Will change to `ready`, `failed`, or other states as processing progresses.
+</ResponseField>
+
+<ResponseField name="uploadMethod" type="string">
+  Upload method used: `direct_url` (for Direct URL and S3 Path methods) or `fragments` (for Fragment concatenation).
+</ResponseField>
+
+<ResponseField name="size" type="number | null">
+  File size in bytes. Will be `null` until the file is processed.
+</ResponseField>
+
+<ResponseField name="duration" type="number | null">
+  Duration in seconds (for video/audio). Will be `null` until the file is processed or for script type.
+</ResponseField>
+
+<ResponseField name="errorMessage" type="string | null">
+  Error message if processing failed. Will be `null` unless status is `failed`.
+</ResponseField>
+
+<ResponseField name="s3Path" type="string">
+  Internal S3 path where the artifact is stored.
+</ResponseField>
+
+<ResponseField name="s3Bucket" type="string">
+  S3 bucket name where the artifact is stored.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string">
+  ISO 8601 timestamp when the artifact was created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string">
+  ISO 8601 timestamp when the artifact was last updated.
+</ResponseField>
+
+<ResponseField name="company" type="object | undefined">
+  Company information object containing `id` and `name` fields. May be undefined depending on context.
+</ResponseField>
+
+<ResponseField name="createdBy" type="object | undefined">
+  User information object containing `id` and `name` fields for the user who created the artifact. May be undefined depending on context.
 </ResponseField>
 
 <RequestExample>
@@ -120,20 +215,59 @@ curl -X POST \
 <ResponseExample>
 ```json Response (Presigned URL)
 {
-  "artifactId": "1a2b3c4d5e6f7g8h9i0j",
-  "presignedUploadUrl": "https://storage.dubformer.ai/uploads/1a2b3c4d5e6f7g8h9i0j?signed=...",
-  "expiresAt": "2023-12-31T23:59:59Z"
+  "artifactId": "67a8f9b0c1d2e3f4g5h6i7j8",
+  "presignedUploadUrl": "https://storage.dubformer.ai/uploads/67a8f9b0c1d2e3f4g5h6i7j8/source_video.mp4?X-Amz-Algorithm=...",
+  "expiresAt": "2026-01-12T12:30:00.000Z"
 }
 ```
 
-```json Response (Direct URL, S3 Path, Fragments)
+```json Response (Direct URL or S3 Path)
 {
-  "id": "1a2b3c4d5e6f7g8h9i0j",
-  "name": "source_video.mp4",
+  "id": "67a8f9b0c1d2e3f4g5h6i7j8",
+  "fileName": "source_video.mp4",
   "type": "video",
-  "status": "pending",
-  "createdAt": "2023-12-31T12:00:00Z",
-  "s3Path": "uploads/1a2b3c4d5e6f7g8h9i0j/source_video.mp4"
+  "status": "created",
+  "uploadMethod": "direct_url",
+  "size": null,
+  "duration": null,
+  "errorMessage": null,
+  "s3Path": "uploads/67a8f9b0c1d2e3f4g5h6i7j8/source_video.mp4",
+  "s3Bucket": "dubformer-artifacts",
+  "createdAt": "2026-01-12T12:00:00.000Z",
+  "updatedAt": "2026-01-12T12:00:00.000Z",
+  "company": {
+    "id": "507f1f77bcf86cd799439011",
+    "name": "Acme Inc"
+  },
+  "createdBy": {
+    "id": "507f191e810c19729de860ea",
+    "name": "John Doe"
+  }
+}
+```
+
+```json Response (Fragments)
+{
+  "id": "67a8f9b0c1d2e3f4g5h6i7j8",
+  "fileName": "concatenated_video.mp4",
+  "type": "video",
+  "status": "created",
+  "uploadMethod": "fragments",
+  "size": null,
+  "duration": null,
+  "errorMessage": null,
+  "s3Path": "uploads/67a8f9b0c1d2e3f4g5h6i7j8/concatenated_video.mp4",
+  "s3Bucket": "dubformer-artifacts",
+  "createdAt": "2026-01-12T12:00:00.000Z",
+  "updatedAt": "2026-01-12T12:00:00.000Z",
+  "company": {
+    "id": "507f1f77bcf86cd799439011",
+    "name": "Acme Inc"
+  },
+  "createdBy": {
+    "id": "507f191e810c19729de860ea",
+    "name": "John Doe"
+  }
 }
 ```
 </ResponseExample>

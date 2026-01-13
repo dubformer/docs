@@ -59,6 +59,28 @@ description: 'Retrieve detailed information about an artifact'
   ISO timestamp when the artifact was last updated.
 </ResponseField>
 
+<ResponseField name="s3Path" type="string">
+  Internal S3 storage path where the artifact file is stored.
+</ResponseField>
+
+<ResponseField name="company" type="object">
+  Company information associated with the artifact.
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">
+      Unique identifier of the company.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="createdBy" type="object">
+  User who created the artifact.
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">
+      Unique identifier of the user.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
 <RequestExample>
 ```bash cURL
 curl -X GET \
@@ -86,20 +108,27 @@ console.log(response.data);
 <ResponseExample>
 ```json Response
 {
-  "id": "1a2b3c4d5e6f7g8h9i0j",
-  "fileName": "source_video.mp4",
-  "type": "video",
+  "id": "694eb201f9fc340f3ae47280",
+  "fileName": "source_video.wav",
+  "type": "audio",
   "status": "upload_completed",
-  "uploadMethod": "presigned_url",
-  "size": 52428800,
-  "duration": 120.5,
+  "uploadMethod": "fragments",
+  "size": 6638526,
+  "duration": 138.301,
   "errorMessage": null,
-  "createdAt": "2023-12-31T12:00:00Z",
-  "updatedAt": "2023-12-31T12:05:30Z"
+  "createdAt": "2025-12-26T16:04:17.367Z",
+  "updatedAt": "2026-01-12T14:42:59.985Z",
+  "s3Path": "uploads/694eb201f9fc340f3ae47280/source_video.wav",
+  "company": {
+    "id": "6686801a54e7c52988dbc531"
+  },
+  "createdBy": {
+    "id": "68517bac632d23eb88bf8e5c"
+  }
 }
 ```
 </ResponseExample>
 
 <Note>
-  This endpoint returns metadata about the artifact. It does not include download URLs or internal storage paths for security reasons.
+  This endpoint returns metadata about the artifact, including the internal S3 storage path. Note that the S3 path is provided for reference but direct access requires proper authentication and authorization.
 </Note> 

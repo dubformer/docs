@@ -22,6 +22,10 @@ description: 'Create a new project with general project information'
   Optional ID of a voices glossary to be used for this project.
 </ParamField>
 
+<ParamField body="remark" type="string">
+  Optional remarks for the project.
+</ParamField>
+
 ## Response
 
 <ResponseField name="id" type="string">
@@ -125,7 +129,7 @@ console.log(response.data);
 </Note>
 
 <Note>
-  The project manager must belong to the same company as the API key user. If no manager email is provided, the API key user will be assigned as the project manager.
+  The `managerEmail` must be a user from the same company as the API key owner. If not provided, the API key owner becomes the project manager.
 </Note>
 
 <Note>

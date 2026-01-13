@@ -19,11 +19,11 @@ This endpoint allows you to add a new video to an existing project. The video wi
 </ParamField>
 
 <ParamField body="workflowType" type="string" required>
-  Type of video processing (e.g., 'dubbing', 'voiceover', 'audio_description').
+  Type of video processing (e.g., `dubbing`, `voiceover`, `audio_description`, `transcription`, `translation`, `subtitling`).
 </ParamField>
 
-<ParamField body="originalVideoArtifactId" type="string" required>
-  Artifact ID of the original video (must be uploaded beforehand).
+<ParamField body="sourceArtifactId" type="string" required>
+  Artifact ID of the source video (must be uploaded beforehand).
 </ParamField>
 
 <ParamField body="sourceLanguage" type="string" required>
@@ -86,7 +86,7 @@ curl -X POST \
   -d '{
     "name": "New Marketing Video",
     "workflowType": "dubbing",
-    "originalVideoArtifactId": "artifact_1234567890",
+    "sourceArtifactId": "artifact_1234567890",
     "sourceLanguage": "en",
     "targetLanguages": ["es-ES", "fr-FR"],
     "pipelineOptions": {
@@ -110,7 +110,7 @@ const response = await axios.post(
   {
     name: 'New Marketing Video',
     workflowType: 'dubbing',
-    originalVideoArtifactId: 'artifact_1234567890',
+    sourceArtifactId: 'artifact_1234567890',
     sourceLanguage: 'en',
     targetLanguages: ['es-ES', 'fr-FR'],
     pipelineOptions: {
