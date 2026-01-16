@@ -73,12 +73,46 @@ This endpoint allows you to add a new video to an existing project. The video wi
   </ul>
 </ParamField>
 
+<ParamField body="subtitlingParams" type="object">
+  Subtitling parameters per destination language. Used only when `workflowType` is `subtitling`.
+
+  This is an object where keys are language codes (e.g., 'en-US', 'es-ES') and values are objects with the following optional fields:
+
+  <ul>
+    <li>`maxLinesPerSubtitle` (number): Maximum number of lines per subtitle (default: 2, range: 1-5)</li>
+    <li>`maxCharsPerLine` (number): Maximum number of characters per line (CPL) (default: 30, range: 1-1000)</li>
+    <li>`maxCharsPerSecond` (number): Maximum reading speed in characters per second (CPS) (default: 20, range: 1-100)</li>
+    <li>`minDurationMs` (number): Minimum subtitle duration in milliseconds (default: 1000, range: 100-60000)</li>
+    <li>`maxDurationMs` (number): Maximum subtitle duration in milliseconds (default: 6000, range: 100-60000)</li>
+  </ul>
+
+  Example:
+  ```json
+  {
+    "en-US": {
+      "maxLinesPerSubtitle": 2,
+      "maxCharsPerLine": 30,
+      "maxCharsPerSecond": 20,
+      "minDurationMs": 1000,
+      "maxDurationMs": 6000
+    },
+    "es-ES": {
+      "maxLinesPerSubtitle": 2,
+      "maxCharsPerLine": 35,
+      "maxCharsPerSecond": 18,
+      "minDurationMs": 1000,
+      "maxDurationMs": 6000
+    }
+  }
+  ```
+</ParamField>
+
 <Note>
   If you automate transcription, you won't be able to edit the generated transcription in the future. The transcription phase will be skipped, and the result of the AI's work will be used.
 </Note>
 
 <RequestExample>
-```bash cURL
+```bash cURL (Dubbing)
 curl -X POST \
   https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create \
   -H 'Authorization: Bearer YOUR_API_KEY' \
@@ -102,7 +136,37 @@ curl -X POST \
   }'
 ```
 
-```typescript TypeScript
+```bash cURL (Subtitling)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Video with Subtitles",
+    "workflowType": "subtitling",
+    "sourceArtifactId": "artifact_1234567890",
+    "sourceLanguage": "en",
+    "targetLanguages": ["es-ES", "fr-FR"],
+    "subtitlingParams": {
+      "es-ES": {
+        "maxLinesPerSubtitle": 2,
+        "maxCharsPerLine": 35,
+        "maxCharsPerSecond": 18,
+        "minDurationMs": 1000,
+        "maxDurationMs": 6000
+      },
+      "fr-FR": {
+        "maxLinesPerSubtitle": 2,
+        "maxCharsPerLine": 30,
+        "maxCharsPerSecond": 20,
+        "minDurationMs": 1000,
+        "maxDurationMs": 6000
+      }
+    }
+  }'
+```
+
+```typescript TypeScript (Dubbing)
 import axios from 'axios';
 
 const response = await axios.post(
@@ -123,6 +187,45 @@ const response = await axios.post(
       { key: "storyTitleId", value: "12345" },
       { key: "storyDeeplink", value: "https://pyramid.dalet.euronews.tech?titleId=12345&kanbanViewId=7KV6cv" }
     ]
+  },
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    }
+  }
+);
+
+console.log(response.data);
+```
+
+```typescript TypeScript (Subtitling)
+import axios from 'axios';
+
+const response = await axios.post(
+  'https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create',
+  {
+    name: 'Video with Subtitles',
+    workflowType: 'subtitling',
+    sourceArtifactId: 'artifact_1234567890',
+    sourceLanguage: 'en',
+    targetLanguages: ['es-ES', 'fr-FR'],
+    subtitlingParams: {
+      'es-ES': {
+        maxLinesPerSubtitle: 2,
+        maxCharsPerLine: 35,
+        maxCharsPerSecond: 18,
+        minDurationMs: 1000,
+        maxDurationMs: 6000
+      },
+      'fr-FR': {
+        maxLinesPerSubtitle: 2,
+        maxCharsPerLine: 30,
+        maxCharsPerSecond: 20,
+        minDurationMs: 1000,
+        maxDurationMs: 6000
+      }
+    }
   },
   {
     headers: {
