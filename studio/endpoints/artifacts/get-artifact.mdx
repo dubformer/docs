@@ -16,8 +16,8 @@ description: 'Retrieve detailed information about an artifact'
   Unique identifier of the artifact.
 </ResponseField>
 
-<ResponseField name="fileName" type="string">
-  Original name of the uploaded file.
+<ResponseField name="name" type="string">
+  Display name of the artifact.
 </ResponseField>
 
 <ResponseField name="type" type="string">
@@ -26,16 +26,15 @@ description: 'Retrieve detailed information about an artifact'
 
 <ResponseField name="status" type="string">
   Current upload/processing status. One of:
-  - `created` - Artifact created, upload pending
-  - `upload_started` - Upload in progress
-  - `upload_completed` - Upload and processing completed
-  - `upload_failed` - Upload or processing failed
+  - `created` - Artifact created, processing pending
+  - `upload_started` - Processing in progress
+  - `upload_completed` - Processing completed successfully
+  - `upload_failed` - Processing failed
 </ResponseField>
 
 <ResponseField name="uploadMethod" type="string">
   Method used to upload the artifact. One of:
-  - `presigned_url` - Uploaded via presigned URL
-  - `direct_url` - Uploaded from external URL
+  - `direct_url` - Uploaded via presigned URL, direct URL, or S3 path
   - `fragments` - Created from concatenated fragments
 </ResponseField>
 
@@ -109,7 +108,7 @@ console.log(response.data);
 ```json Response
 {
   "id": "694eb201f9fc340f3ae47280",
-  "fileName": "source_video.wav",
+  "name": "Source Audio",
   "type": "audio",
   "status": "upload_completed",
   "uploadMethod": "fragments",

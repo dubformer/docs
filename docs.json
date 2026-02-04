@@ -76,6 +76,8 @@
           {
             "group": "Artifacts",
             "pages": [
+              "studio/endpoints/artifacts/overview",
+              "studio/endpoints/artifacts/get-presigned-upload-url",
               "studio/endpoints/artifacts/create-artifact-upload",
               "studio/endpoints/artifacts/get-artifact"
             ]

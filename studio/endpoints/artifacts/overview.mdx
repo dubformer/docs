@@ -1,0 +1,94 @@
+---
+title: 'Overview'
+description: 'Understanding artifact upload methods and choosing the right approach'
+---
+
+Artifacts are source files (video, audio, or script) that you upload to Dubformer Studio for processing. There are multiple ways to upload artifacts depending on where your files are located and your use case.
+
+## Upload Methods
+
+### 1. Presigned Upload (Local Files)
+
+**When to use:** Uploading files from your local machine, client applications, or when you need direct upload control.
+
+**How it works:**
+1. Request a presigned URL via GET request
+2. Upload your file directly to S3 using the presigned URL
+3. Create the artifact record via POST request with the S3 path
+
+<Card
+  title="Get Presigned Upload URL"
+  icon="arrow-right"
+  href="/studio/endpoints/artifacts/get-presigned-upload-url"
+>
+  Learn how to get a presigned URL for uploading local files
+</Card>
+
+### 2. Direct URL Upload
+
+**When to use:** Your file is already hosted on a publicly accessible URL.
+
+**How it works:**
+1. Send a POST request with the file URL
+2. Dubformer downloads the file asynchronously
+
+<Card
+  title="Create Artifact from URL"
+  icon="arrow-right"
+  href="/studio/endpoints/artifacts/create-artifact-upload"
+>
+  Learn how to create artifacts from public URLs
+</Card>
+
+### 3. S3 Path Upload
+
+**When to use:** Your file is already in an AWS S3 bucket.
+
+**How it works:**
+1. Configure S3 credentials in your [Studio Profile](https://studio.dubformer.ai/profile)  -> API Keys -> Add S3 credentials
+2. Send a POST request with the S3 path
+3. Dubformer downloads the file asynchronously
+
+<Card
+  title="Create Artifact from S3"
+  icon="arrow-right"
+  href="/studio/endpoints/artifacts/create-artifact-upload"
+>
+  Learn how to create artifacts from S3 buckets
+</Card>
+
+### 4. Fragment Concatenation
+
+**When to use:** You need to combine multiple video/audio clips into a single artifact.
+
+**How it works:**
+1. Send a POST request with an array of fragments (each with URL or S3 path)
+2. Dubformer downloads/copies and concatenates them
+
+**Limitations:** Not supported for script type artifacts. All fragments must have the same format (codec, resolution, frame rate).
+
+<Card
+  title="Create Artifact from Fragments"
+  icon="arrow-right"
+  href="/studio/endpoints/artifacts/create-artifact-upload"
+>
+  Learn how to concatenate multiple clips into one artifact
+</Card>
+
+
+## Processing Status
+
+All upload methods create an artifact with `created` status initially. The artifact will transition through these states:
+
+- `created` - Artifact created, processing pending
+- `upload_started` - File is being downloaded/copied/processed
+- `upload_completed` - File is ready for use
+- `upload_failed` - Processing failed (check `errorMessage` field)
+
+<Card
+  title="Get Artifact Status"
+  icon="arrow-right"
+  href="/studio/endpoints/artifacts/get-artifact"
+>
+  Learn how to monitor artifact processing status
+</Card>
