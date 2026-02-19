@@ -27,11 +27,17 @@ This endpoint allows you to add a new video to an existing project. The video wi
 </ParamField>
 
 <ParamField body="sourceLanguage" type="string" required>
-  Source language code (e.g., 'en', 'ru').
+  Source language code in [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format (e.g., `en`, `ru`, `de`).
+
+  You can also pass `multi` to enable multi-language source mode, where the source video contains speech in multiple languages. In this mode, the system will automatically detect the language of each segment.
+
+  <Note>
+    The `multi` option must be enabled for your organization by an administrator. Contact your account manager to activate multi-language source support.
+  </Note>
 </ParamField>
 
 <ParamField body="targetLanguages" type="array" required>
-  Array of target language codes (e.g., ['es-ES', 'fr-FR']).
+  Array of target language codes in [BCP 47](https://en.wikipedia.org/wiki/IETF_language_tag) format — a combination of an ISO 639-1 language code and an ISO 3166-1 Alpha-2 region code (e.g., `es-ES`, `fr-FR`, `en-US`).
 </ParamField>
 
 <ParamField body="backgroundWavArtifactId" type="string">
