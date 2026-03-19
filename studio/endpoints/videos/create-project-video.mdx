@@ -71,11 +71,20 @@ This endpoint allows you to add a new video to an existing project. The video wi
 </ParamField>
 
 <ParamField body="pipelineOptions" type="object">
-  Pipeline configuration options (see below, all fields optional):
+  Pipeline configuration options (all fields optional):
   <ul>
-    <li>shouldAutomateTranscription: boolean</li>
-    <li>shouldAutomateTranslation: boolean</li>
-    <li>shouldAutomateVoiceSelection: boolean</li>
+    <li>`shouldAutomateTranscription` (boolean): Automatically transcribe the source video</li>
+    <li>`shouldAutomateTranslation` (boolean): Automatically translate the transcription</li>
+    <li>`shouldAutomateVoiceSelection` (boolean): Automatically select voices for speakers</li>
+    <li>`voiceSelectionMode` (string): How voices are selected during automation. Requires `shouldAutomateVoiceSelection: true`. One of:
+      <ul>
+        <li>`default` — use library voices (default)</li>
+        <li>`cloning` — use voice cloning (ElevenLabs). All target languages must support cloning</li>
+        <li>`emotion_transfer` — use emotion transfer. Must be enabled for your organization, and all target languages must support it</li>
+        <li>`label` — use only voices with a specific label. Requires `voiceSelectionVoicesLabel`</li>
+      </ul>
+    </li>
+    <li>`voiceSelectionVoicesLabel` (string): Voice label name to filter by. Required when `voiceSelectionMode` is `label`. The label must exist and have matching voices for all target languages</li>
   </ul>
 </ParamField>
 
@@ -139,6 +148,27 @@ curl -X POST \
       { "key": "storyTitleId", "value": "12345" },
       { "key": "storyDeeplink", "value": "https://pyramid.dalet.euronews.tech?titleId=12345&kanbanViewId=7KV6cv" }
     ]
+  }'
+```
+
+```bash cURL (Dubbing with Voice Label)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "News Segment",
+    "workflowType": "dubbing",
+    "sourceArtifactId": "artifact_1234567890",
+    "sourceLanguage": "en",
+    "targetLanguages": ["es-ES", "fr-FR"],
+    "pipelineOptions": {
+      "shouldAutomateTranscription": true,
+      "shouldAutomateTranslation": true,
+      "shouldAutomateVoiceSelection": true,
+      "voiceSelectionMode": "label",
+      "voiceSelectionVoicesLabel": "News"
+    }
   }'
 ```
 
