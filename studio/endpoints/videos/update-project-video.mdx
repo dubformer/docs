@@ -33,6 +33,19 @@ This endpoint allows you to update various properties of a video in a project: n
 <ParamField body="remark" type="string" optional>
   New remark for the video.
 </ParamField>
+<ParamField body="stringVariables" type="array" optional>
+  Array of key-value pairs for storing video metadata. Useful for storing external system references like backlinks, identifiers, or other custom metadata. Replaces the entire array when provided.
+
+  Each item should be an object with `key` and `value` properties (both strings).
+
+  Example:
+  ```json
+  [
+    { "key": "storyTitleId", "value": "12345" },
+    { "key": "storyDeeplink", "value": "https://..." }
+  ]
+  ```
+</ParamField>
 
 <RequestExample>
 ```bash cURL
@@ -98,6 +111,9 @@ console.log(response.data); // updated video object
 </ResponseField>
 <ResponseField name="remark" type="string" optional>
   The remark for the video.
+</ResponseField>
+<ResponseField name="stringVariables" type="array | null">
+  Array of key-value pairs with video metadata, or null if not set.
 </ResponseField>
 <ResponseField name="createdAt" type="string" required>
   Creation timestamp.
