@@ -70,6 +70,16 @@ This endpoint allows you to add a new video to an existing project. The video wi
   ```
 </ParamField>
 
+<ParamField body="pivotLanguage" type="string">
+  Optional pivot (intermediate) language code in [BCP 47](https://en.wikipedia.org/wiki/IETF_language_tag) format (e.g., `en-US`).
+
+  When set, translation goes through the pivot language first (e.g., `ru` → `en-US` → `es-ES`) instead of translating directly from source to each target language. This can improve translation quality for rare language pairs.
+
+  Supported for `dubbing`, `voiceover`, `translation`, and `subtitling` workflow types. Not available for `transcription` and `audio_description`.
+
+  When pivot language is used, original timings are automatically preserved (align step is skipped).
+</ParamField>
+
 <ParamField body="pipelineOptions" type="object">
   Pipeline configuration options (all fields optional):
   <ul>
@@ -168,6 +178,26 @@ curl -X POST \
       "shouldAutomateVoiceSelection": true,
       "voiceSelectionMode": "label",
       "voiceSelectionVoicesLabel": "News"
+    }
+  }'
+```
+
+```bash cURL (Dubbing with Pivot Language)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Video with Pivot Translation",
+    "workflowType": "dubbing",
+    "sourceArtifactId": "artifact_1234567890",
+    "sourceLanguage": "ru",
+    "targetLanguages": ["en-US", "es-ES", "fr-FR"],
+    "pivotLanguage": "en-US",
+    "pipelineOptions": {
+      "shouldAutomateTranscription": true,
+      "shouldAutomateTranslation": true,
+      "shouldAutomateVoiceSelection": true
     }
   }'
 ```
@@ -298,6 +328,9 @@ console.log(response.data);
 <ResponseField name="dstLangs" type="array">
   Array of target language codes.
 </ResponseField>
+<ResponseField name="pivotLanguage" type="string | null">
+  Pivot language code, if set.
+</ResponseField>
 <ResponseField name="videoDuration" type="number">
   Duration of the video in seconds (if available).
 </ResponseField>
@@ -324,6 +357,7 @@ console.log(response.data);
   "workflowType": "dubbing",
   "srcLang": "en",
   "dstLangs": ["es-ES", "fr-FR"],
+  "pivotLanguage": null,
   "videoDuration": 123.45,
   "remark": "Optional comment",
   "stringVariables": [
