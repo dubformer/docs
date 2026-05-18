@@ -58,9 +58,19 @@ Choose **exactly one** of the following parameters to specify your file source:
   - `url` or `s3Path` - source location
   - `startTime` - start time in seconds (must be >= 0)
 
-  All fragments must have the same format (codec, resolution, frame rate).
+  All fragments must have the same format (codec, resolution, frame rate). Fragments are sorted by `startTime` and gaps between them are filled with silence (audio) or black frames (video).
 
   **Use when:** Combining multiple clips into one file
+</ParamField>
+
+<ParamField body="artifactDuration" type="number">
+  Target duration of the final artifact in seconds. Can only be used with `audio` type `fragments`.
+
+  When specified, the concatenated result is adjusted to match this exact duration:
+  - If the result is shorter, silence is appended
+  - If the result is longer, it is trimmed
+
+  **Use when:** You need the audio artifact to have a precise duration (e.g., matching a source video length)
 </ParamField>
 
 <Tip>
@@ -173,7 +183,7 @@ curl -X POST \
   }'
 ```
 
-```bash Fragments
+```bash Fragments (Video)
 curl -X POST \
   https://studio.dubformer.ai/api/v1/artifacts/create \
   -H 'Authorization: Bearer YOUR_API_KEY' \
@@ -195,6 +205,28 @@ curl -X POST \
         "startTime": 300
       }
     ]
+  }'
+```
+
+```bash Fragments (Audio with exact duration)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/artifacts/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Concatenated Audio",
+    "type": "audio",
+    "fragments": [
+      {
+        "url": "https://example.com/segment1.wav",
+        "startTime": 0
+      },
+      {
+        "url": "https://example.com/segment2.wav",
+        "startTime": 120.5
+      }
+    ],
+    "artifactDuration": 360
   }'
 ```
 
