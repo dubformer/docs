@@ -56,15 +56,21 @@ Choose **exactly one** of the following parameters to specify your file source:
 
   Not supported for `script` type. Each fragment object must contain:
   - `url` or `s3Path` - source location
-  - `startTime` - start time in seconds (must be >= 0)
+  - `timePositionMs` - start time in milliseconds (must be >= 0)
 
-  All fragments must have the same format (codec, resolution, frame rate). Fragments are sorted by `startTime` and gaps between them are filled with silence (audio) or black frames (video).
+  Optional trimming fields (audio only):
+  - `timeInMs` - trim start position within the source file in milliseconds (must be >= 0). If omitted, trimming starts from the beginning
+  - `timeOutMs` - trim end position within the source file in milliseconds (must be > timeInMs when both are provided). If omitted, trimming goes to the end
 
-  **Use when:** Combining multiple clips into one file
+  When specified, only the matching portion is extracted from the source and placed at `timePositionMs` in the final artifact.
+
+  All fragments must have the same format (codec, resolution, frame rate). Fragments are sorted by `timePositionMs` and gaps between them are filled with silence (audio) or black frames (video).
+
+  **Use when:** Combining multiple clips (or portions of clips) into one file
 </ParamField>
 
-<ParamField body="artifactDuration" type="number">
-  Target duration of the final artifact in seconds. Can only be used with `audio` type `fragments`.
+<ParamField body="artifactDurationMs" type="number">
+  Target duration of the final artifact in milliseconds. Can only be used with `audio` type `fragments`.
 
   When specified, the concatenated result is adjusted to match this exact duration:
   - If the result is shorter, silence is appended
@@ -194,15 +200,40 @@ curl -X POST \
     "fragments": [
       {
         "url": "https://example.com/intro.mp4",
-        "startTime": 0
+        "timePositionMs": 0
       },
       {
         "url": "https://example.com/main.mp4",
-        "startTime": 10
+        "timePositionMs": 10000
       },
       {
         "url": "https://example.com/outro.mp4",
-        "startTime": 300
+        "timePositionMs": 300000
+      }
+    ]
+  }'
+```
+
+```bash Fragments (Audio with trimming)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/artifacts/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Trimmed and Concatenated Audio",
+    "type": "audio",
+    "fragments": [
+      {
+        "url": "https://example.com/full-recording.wav",
+        "timePositionMs": 0,
+        "timeInMs": 5000,
+        "timeOutMs": 15000
+      },
+      {
+        "url": "https://example.com/full-recording.wav",
+        "timePositionMs": 10000,
+        "timeInMs": 60000,
+        "timeOutMs": 90000
       }
     ]
   }'
@@ -219,14 +250,14 @@ curl -X POST \
     "fragments": [
       {
         "url": "https://example.com/segment1.wav",
-        "startTime": 0
+        "timePositionMs": 0
       },
       {
         "url": "https://example.com/segment2.wav",
-        "startTime": 120.5
+        "timePositionMs": 120500
       }
     ],
-    "artifactDuration": 360
+    "artifactDurationMs": 360000
   }'
 ```
 
