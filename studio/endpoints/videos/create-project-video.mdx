@@ -88,20 +88,16 @@ This endpoint allows you to add a new video to an existing project. The video wi
 
 <ParamField body="pipelineOptions" type="object">
   Pipeline configuration options (all fields optional):
-  <ul>
-    <li>`shouldAutomateTranscription` (boolean): Automatically transcribe the source video</li>
-    <li>`shouldAutomateTranslation` (boolean): Automatically translate the transcription</li>
-    <li>`shouldAutomateVoiceSelection` (boolean): Automatically select voices for speakers</li>
-    <li>`voiceSelectionMode` (string): How voices are selected during automation. Requires `shouldAutomateVoiceSelection: true`. One of:
-      <ul>
-        <li>`default` — use library voices (default)</li>
-        <li>`cloning` — use voice cloning (ElevenLabs). All target languages must support cloning</li>
-        <li>`emotion_transfer` — use emotion transfer. Must be enabled for your organization, and all target languages must support it</li>
-        <li>`label` — use only voices with a specific label. Requires `voiceSelectionVoicesLabel`</li>
-      </ul>
-    </li>
-    <li>`voiceSelectionVoicesLabel` (string): Voice label name to filter by. Required when `voiceSelectionMode` is `label`. The label must exist and have matching voices for all target languages</li>
-  </ul>
+
+  - `shouldAutomateTranscription` (boolean): Automatically transcribe the source video
+  - `shouldAutomateTranslation` (boolean): Automatically translate the transcription
+  - `shouldAutomateVoiceSelection` (boolean): Automatically select voices for speakers
+  - `voiceSelectionMode` (string): How voices are selected during automation. Requires `shouldAutomateVoiceSelection: true`. One of:
+    - `default` — use library voices (default)
+    - `cloning` — use voice cloning (ElevenLabs). All target languages must support cloning
+    - `emotion_transfer` — use emotion transfer. Must be enabled for your organization, and all target languages must support it
+    - `label` — use only voices with a specific label. Requires `voiceSelectionVoicesLabel`
+  - `voiceSelectionVoicesLabel` (string): Voice label name to filter by. Required when `voiceSelectionMode` is `label`. The label must exist and have matching voices for all target languages
 </ParamField>
 
 <ParamField body="subtitlingParams" type="object">
