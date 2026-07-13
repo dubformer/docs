@@ -46,6 +46,24 @@ This endpoint allows you to update various properties of a video in a project: n
   ]
   ```
 </ParamField>
+<ParamField body="translationPrompt" type="object" optional>
+  Extra translation guidance passed to the translation engine. Replaces the stored value when provided.
+
+  <ul>
+    <li>`common` (string): Guidance applied to **all** target languages.</li>
+    <li>`byLang` (object): Per-language guidance, keyed by target language code. Each key must be one of the video's target languages (the `dstLangs` sent in the same request, or the video's existing ones).</li>
+  </ul>
+
+  Example:
+  ```json
+  {
+    "common": "Keep brand names in English and use a friendly tone.",
+    "byLang": {
+      "de-DE": "Use the formal register (Sie)."
+    }
+  }
+  ```
+</ParamField>
 
 <RequestExample>
 ```bash cURL
@@ -114,6 +132,9 @@ console.log(response.data); // updated video object
 </ResponseField>
 <ResponseField name="stringVariables" type="array | null">
   Array of key-value pairs with video metadata, or null if not set.
+</ResponseField>
+<ResponseField name="translationPrompt" type="object | null">
+  The translation guidance stored for the video (`common` and/or `byLang`), or `null` if not set.
 </ResponseField>
 <ResponseField name="createdAt" type="string" required>
   Creation timestamp.

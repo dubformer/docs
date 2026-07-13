@@ -36,6 +36,12 @@ This endpoint allows you to add a new video to an existing project. The video wi
   </Note>
 </ParamField>
 
+<ParamField body="sourceLanguageWhitelist" type="array">
+  Optional list of source language codes in [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format (e.g., `["en", "ru", "de"]`) to restrict automatic language detection to a known subset.
+
+  Only allowed when `sourceLanguage` is `multi`. Omit the field to detect any supported language. When provided, it must be a non-empty array.
+</ParamField>
+
 <ParamField body="targetLanguages" type="array" required>
   Array of target language codes in [BCP 47](https://en.wikipedia.org/wiki/IETF_language_tag) format — a combination of an ISO 639-1 language code and an ISO 3166-1 Alpha-2 region code (e.g., `es-ES`, `fr-FR`, `en-US`).
 </ParamField>
@@ -127,6 +133,25 @@ This endpoint allows you to add a new video to an existing project. The video wi
       "maxCharsPerSecond": 18,
       "minDurationMs": 1000,
       "maxDurationMs": 6000
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField body="translationPrompt" type="object">
+  Extra translation guidance passed to the translation engine. Optional.
+
+  <ul>
+    <li>`common` (string): Guidance applied to **all** target languages.</li>
+    <li>`byLang` (object): Per-language guidance. Keys are target language codes (each must be present in `targetLanguages`), values are strings. The backend merges `common` first, then the language-specific prompt.</li>
+  </ul>
+
+  Example:
+  ```json
+  {
+    "common": "Keep brand names in English and use a friendly tone.",
+    "byLang": {
+      "de-DE": "Use the formal register (Sie)."
     }
   }
   ```
@@ -339,6 +364,9 @@ console.log(response.data);
 </ResponseField>
 <ResponseField name="stringVariables" type="array | null">
   Array of key-value pairs containing video metadata, if provided.
+</ResponseField>
+<ResponseField name="translationPrompt" type="object | null">
+  The translation guidance stored for the video (`common` and/or `byLang`), or `null` if not set.
 </ResponseField>
 <ResponseField name="createdAt" type="string">
   ISO timestamp of creation.
