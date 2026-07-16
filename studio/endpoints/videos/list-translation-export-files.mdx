@@ -1,0 +1,107 @@
+---
+title: 'List Translation Export Files'
+api: 'GET /api/v1/projects/{projectId}/videos/{videoId}/translations/{locale}/export'
+description: 'List the downloadable files of a translation with temporary download links'
+---
+
+This endpoint returns the downloadable files of a single target language (final video, mixed
+audio, synthesis-only audio, adapted script, subtitles, cast), each with a temporary presigned
+download link.
+
+Only files that are currently available are returned. Files that are still being produced are
+omitted, so you can poll this endpoint until the file you need appears in the response.
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project.
+</ParamField>
+
+<ParamField path="videoId" type="string" required>
+  The unique identifier of the video.
+</ParamField>
+
+<ParamField path="locale" type="string" required>
+  The target language code, matching one of the video's `dstLangs` (e.g. `en-GB`). Case-insensitive.
+</ParamField>
+
+## Response
+
+The response is a JSON array of file objects. Each object has the following fields:
+
+<ResponseField name="presignedUrl" type="string">
+  Temporary presigned URL to download the file directly from storage. Valid for 24 hours (see `expiresAt`).
+</ResponseField>
+<ResponseField name="filename" type="string">
+  Name of the file, including its extension (e.g. `tts_final.mp4`, `subs_hitl.vtt`).
+</ResponseField>
+<ResponseField name="modifiedAt" type="string">
+  ISO timestamp of when the file was last modified.
+</ResponseField>
+<ResponseField name="expiresAt" type="string">
+  ISO timestamp of when `presignedUrl` expires.
+</ResponseField>
+
+<Note>
+  The synthesis-only audio `tts.wav` may be a single multichannel file with one channel per
+  speaker. Channels are ordered by speaker id sorted as strings (e.g. `F0`, `M0`, `M1`). To map a
+  channel to a speaker, collect the distinct speaker ids from the adapted script (`tts_hitl.vtt` /
+  `tts_auto.vtt`) and sort them the same way — the channel index is the speaker's position in that
+  sorted list.
+</Note>
+
+<RequestExample>
+```bash cURL
+curl -X GET \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c/translations/en-GB/export \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.get(
+  'https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c/translations/en-GB/export',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "presignedUrl": "https://df-studio-storage.s3.eu-west-1.amazonaws.com/.../en-GB/tts_final.mp4?X-Amz-Signature=...",
+    "filename": "tts_final.mp4",
+    "modifiedAt": "2026-07-14T09:12:03.000Z",
+    "expiresAt": "2026-07-15T09:12:03.000Z"
+  },
+  {
+    "presignedUrl": "https://df-studio-storage.s3.eu-west-1.amazonaws.com/.../en-GB/tts.wav?X-Amz-Signature=...",
+    "filename": "tts.wav",
+    "modifiedAt": "2026-07-14T09:12:03.000Z",
+    "expiresAt": "2026-07-15T09:12:03.000Z"
+  },
+  {
+    "presignedUrl": "https://df-studio-storage.s3.eu-west-1.amazonaws.com/.../en-GB/subs_hitl.vtt?X-Amz-Signature=...",
+    "filename": "subs_hitl.vtt",
+    "modifiedAt": "2026-07-14T09:12:03.000Z",
+    "expiresAt": "2026-07-15T09:12:03.000Z"
+  }
+]
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Unknown translation locale 'xx-XX'"
+}
+```
+</ResponseExample>

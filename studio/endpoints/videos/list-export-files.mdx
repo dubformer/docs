@@ -1,0 +1,89 @@
+---
+title: 'List Export Files'
+api: 'GET /api/v1/projects/{projectId}/videos/{videoId}/export'
+description: 'List the downloadable source files of a video with temporary download links'
+---
+
+This endpoint returns the downloadable source-level files of a video (original video, music &
+effects, international mix, vocals, original script), each with a temporary presigned download
+link.
+
+Only files that are currently available are returned. Files that are still being produced are
+omitted, so you can poll this endpoint until the file you need appears in the response.
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project.
+</ParamField>
+
+<ParamField path="videoId" type="string" required>
+  The unique identifier of the video.
+</ParamField>
+
+## Response
+
+The response is a JSON array of file objects. Each object has the following fields:
+
+<ResponseField name="presignedUrl" type="string">
+  Temporary presigned URL to download the file directly from storage. Valid for 24 hours (see `expiresAt`).
+</ResponseField>
+<ResponseField name="filename" type="string">
+  Name of the file, including its extension (e.g. `original.mp4`, `asr_aligned.vtt`).
+</ResponseField>
+<ResponseField name="modifiedAt" type="string">
+  ISO timestamp of when the file was last modified.
+</ResponseField>
+<ResponseField name="expiresAt" type="string">
+  ISO timestamp of when `presignedUrl` expires.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c/export \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.get(
+  'https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c/export',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "presignedUrl": "https://df-studio-storage.s3.eu-west-1.amazonaws.com/.../original.mp4?X-Amz-Signature=...",
+    "filename": "original.mp4",
+    "modifiedAt": "2026-07-14T09:12:03.000Z",
+    "expiresAt": "2026-07-15T09:12:03.000Z"
+  },
+  {
+    "presignedUrl": "https://df-studio-storage.s3.eu-west-1.amazonaws.com/.../asr_aligned.vtt?X-Amz-Signature=...",
+    "filename": "asr_aligned.vtt",
+    "modifiedAt": "2026-07-14T09:12:03.000Z",
+    "expiresAt": "2026-07-15T09:12:03.000Z"
+  }
+]
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Not Found"
+}
+```
+</ResponseExample>

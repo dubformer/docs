@@ -99,7 +99,9 @@
               "studio/endpoints/videos/get-project-video",
               "studio/endpoints/videos/list-project-videos",
               "studio/endpoints/videos/update-project-video",
-              "studio/endpoints/videos/delete-project-video"
+              "studio/endpoints/videos/delete-project-video",
+              "studio/endpoints/videos/list-export-files",
+              "studio/endpoints/videos/list-translation-export-files"
             ]
           }
         ]

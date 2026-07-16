@@ -153,6 +153,36 @@ This endpoint allows you to add a new video to an existing project. The video wi
   ```
 </ParamField>
 
+<ParamField body="processingOptions" type="object">
+  Advanced audio processing and export options applied when the video is rendered. All fields are optional; omit the field entirely to use the defaults.
+
+  <ul>
+    <li>`exportTtsAaf` (boolean): Export the synthesized speech in AAF format with separate audio tracks for each speaker (default: `false`).</li>
+    <li>`channelPerSpeaker` (boolean, **deprecated**): Place each speaker in a separate audio channel instead of mixing them into one (default: `false`). Use `exportTtsAaf` instead.</li>
+    <li>`targetLoudness` (number): Final loudness (LUFS) the output is normalized to (default: `-23`, per the EBU R128 standard).</li>
+    <li>`ttsLoudness` (number): Loudness (LUFS) of the synthesized speech handed to mixing (default: `-23`).</li>
+    <li>`mixerCrossfadeMs` (number): Crossfade duration in milliseconds at speech boundaries — controls how smooth or sharp audio transitions are (default: `300`).</li>
+    <li>`exportWavCodec` (string): Audio codec for WAV export. One of `pcm_s16le`, `pcm_s24le`, `pcm_s32le`, `pcm_f32le`, `pcm_f64le` (default: `pcm_s16le`).</li>
+    <li>`exportWavRate` (number): Sample rate in Hz for exported WAV files, e.g. `44100`, `48000` (default: `44100`).</li>
+    <li>`voiceoverMuffleDb` (number): How much (dB) to lower the original audio where synthesis is overlaid in voiceover mode. Higher values make the original quieter (default: `9`).</li>
+    <li>`backgroundMuffleDb` (number): How much (dB) to lower the background track in voice-replacement mode. Applied only when a background track is provided (default: `7`).</li>
+    <li>`voiceoverFixVocalsVolume` (boolean): Lower the on-screen speech across the whole track (by `voiceoverMuffleDb`), not only where synthesis is applied (default: `false`).</li>
+    <li>`voiceoverFixBackgroundVolume` (boolean): Keep the background at full volume and lower only the original speech by `voiceoverMuffleDb` when overlaying synthesis (default: `true`).</li>
+    <li>`transferVoiceLoudness` (boolean): Transfer the loudness of the separated original speech onto the synthesized speech, segment by segment (default: `false`).</li>
+    <li>`useBackgroundNorm` (boolean): Normalize the loudness of the background track (default: `false`).</li>
+  </ul>
+
+  Example:
+  ```json
+  {
+    "exportTtsAaf": true,
+    "targetLoudness": -23,
+    "exportWavCodec": "pcm_s24le",
+    "exportWavRate": 48000
+  }
+  ```
+</ParamField>
+
 <Note>
   If you automate transcription, you won't be able to edit the generated transcription in the future. The transcription phase will be skipped, and the result of the AI's work will be used.
 </Note>
@@ -249,6 +279,27 @@ curl -X POST \
         "minDurationMs": 1000,
         "maxDurationMs": 6000
       }
+    }
+  }'
+```
+
+```bash cURL (Advanced Processing Options)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Video with Custom Mixing",
+    "workflowType": "dubbing",
+    "sourceArtifactId": "artifact_1234567890",
+    "sourceLanguage": "en",
+    "targetLanguages": ["es-ES", "fr-FR"],
+    "processingOptions": {
+      "exportTtsAaf": true,
+      "targetLoudness": -23,
+      "exportWavCodec": "pcm_s24le",
+      "exportWavRate": 48000,
+      "voiceoverMuffleDb": 9
     }
   }'
 ```
