@@ -1,0 +1,111 @@
+---
+title: 'Get Project Video Status'
+api: 'GET /api/v1/projects/{projectId}/videos/{videoId}/status'
+description: 'Track pipeline status of a video, per target language'
+---
+
+This endpoint reports the processing status of a video, broken down **per target language**. For each
+language you get the current stage, whether it is being processed automatically or worked on manually,
+whether anything failed, and a rough completion estimate.
+
+Each video produces one entry per target language. All target languages are present from the
+start. Transcription-only videos return a single entry keyed by the source language.
+
+## Path Parameters
+
+<ParamField path="projectId" type="string" required>
+  The unique identifier of the project.
+</ParamField>
+
+<ParamField path="videoId" type="string" required>
+  The unique identifier of the video.
+</ParamField>
+
+## Response
+
+<ResponseField name="langs" type="object[]">
+  One entry per target language.
+  <Expandable title="language" defaultOpen>
+    <ResponseField name="lang" type="string">
+      Language of this entry (source language for `transcription`-type videos).
+    </ResponseField>
+    <ResponseField name="phase" type="string">
+      How far the pipeline has progressed. One of:
+      `transcription` (transcribing the source audio), `translation` (translating into the target
+      language), `voiceover` (generating and refining the synthesized voice), `mixing` (mixing the voice
+      with the original background audio), `rendering` (producing the final video file).
+    </ResponseField>
+    <ResponseField name="pendingOn" type="string | null">
+      Whose side the ball is on right now. `system` — automated processing is running or queued.
+      `editor` — our team is working on it manually, or the stage is ready and awaiting further manual
+      input. `null` — this language is stuck on an error (see `isError`).
+    </ResponseField>
+    <ResponseField name="isError" type="boolean">
+      `true` if the latest processing step failed. Clears automatically once a retry starts.
+    </ResponseField>
+    <ResponseField name="eta" type="string | null">
+      Approximate ISO-8601 completion time of the step currently running. `null` while a step is queued
+      or while a manual step is in progress.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<Note>
+  `eta` is an **approximate** estimate for the **current running step only** — not the whole remaining
+  pipeline. There is no terminal "done" state: once finished, an entry rests at `pendingOn: "editor"`
+  (edits are always possible). Use the export endpoints to fetch produced files.
+</Note>
+
+<RequestExample>
+```bash cURL
+curl -X GET \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c/status \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+```typescript TypeScript
+import axios from 'axios';
+
+const response = await axios.get(
+  'https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/vid_7a92c36d4fe3c/status',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY'
+    }
+  }
+);
+
+console.log(response.data);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "langs": [
+    {
+      "lang": "es-ES",
+      "phase": "voiceover",
+      "pendingOn": "editor",
+      "isError": false,
+      "eta": null
+    },
+    {
+      "lang": "fr-FR",
+      "phase": "translation",
+      "pendingOn": "system",
+      "isError": false,
+      "eta": "2026-07-17T12:20:00.000Z"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response
+{
+  "error": "Video not found"
+}
+```
+</ResponseExample>
