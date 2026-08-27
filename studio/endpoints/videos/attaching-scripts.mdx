@@ -1,0 +1,187 @@
+---
+title: 'Attaching Scripts'
+description: 'Attach a ready-made source transcript or target translations when creating a video'
+---
+
+When you [create a video](/studio/endpoints/videos/create-project-video) you can attach ready-made
+scripts instead of transcribing or translating from scratch:
+
+- **`sourceScript`** — the original-language transcript. Attaching it skips transcription.
+- **`targetScripts`** — finished translations, keyed by target language. Each key must be present in
+  `targetLanguages`.
+
+Scripts can only be attached at video creation time.
+
+### Which workflows accept scripts
+
+| `workflowType` | `sourceScript` | `targetScripts` |
+|---|:---:|:---:|
+| `dubbing` | ✓ | ✓ |
+| `voiceover` | ✓ | ✓ |
+| `audio_description` | ✓ | ✓ |
+| `transcription` | ✓ | — |
+| `translation` | ✓ | ✓ |
+| `subtitling` | ✓ | — |
+
+Each script references the `artifactId` of an
+[already-uploaded artifact](/studio/endpoints/artifacts/overview) of type `script`, plus
+[optional settings](#import-settings). `sourceScript` and every `targetScripts` entry have the same
+shape.
+
+```json
+{
+  "sourceScript": { "artifactId": "artifact_7c9a1f04b2e8" },
+  "targetScripts": {
+    "es-ES": { "artifactId": "artifact_3b1d68f9a05c" },
+    "fr-FR": {
+      "artifactId": "artifact_e42a7b3c9106",
+      "columns": { "text": "Line", "startTime": "In", "endTime": "Out" }
+    }
+  }
+}
+```
+
+## Supported formats
+
+| Format | Columns |
+|---|---|
+| **VTT / SRT / TTML** | Defined by the format; no `columns` needed. |
+| **XLSX / XLS / CSV** | Map each column to a role with `columns`. |
+
+Maximum file size: **50 MB**.
+
+## Import settings
+
+Optional, inline next to `artifactId`. Format restrictions are noted where they apply.
+
+<ParamField body="columns" type="object">
+  **XLSX / XLS / CSV only.** Maps each script field to a column, addressed one of two ways:
+  - by header **name** (string)
+  - by zero-based **index** (number)
+
+  Both can be mixed in one map.
+
+  | Script field | Description |
+  |---|---|
+  | `text` | Chunk text. **Required.** |
+  | `startTime` | Start timecode. |
+  | `endTime` | End timecode. |
+  | `speakerTag` | Speaker tag, e.g. `M0`, `F1`. |
+  | `speakerName` | Speaker display name, or `non-voiced` to mark the chunk non-voiced. |
+
+  A `non-voiced` value in either speaker column is honored only in `fromFile` speaker mode.
+
+  Addressing any column by **name** forces `skipFirstRow` to `true` (row 0 is the header) — even if you
+  pass `false`. With **index**-only addressing no header is assumed; set `skipFirstRow: true` yourself
+  if the file has one.
+
+  ```json
+  {
+    "columns": {
+      "text": "Line",
+      "startTime": "In",
+      "endTime": "Out",
+      "speakerName": "Character"
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField body="skipFirstRow" type="boolean">
+  **XLSX / XLS / CSV only.** Drop row 0 (a header row). Implied `true` when any column is addressed by
+  name.
+</ParamField>
+
+<ParamField body="sheet" type="string | number">
+  **XLSX / XLS only.** Which sheet to read, by name or zero-based index. Defaults to the first.
+</ParamField>
+
+<ParamField body="timingsMode" type="string">
+  Where chunk timings come from:
+  - `fromFile` (default) — read start and end from the file.
+  - `estimateEnd` — read start from the file, estimate each end from the text length.
+  - `auto` — detected by the backend from the media. Not available with a `pivotLanguage`.
+</ParamField>
+
+<ParamField body="speakersMode" type="string">
+  Where speakers come from:
+  - `fromFile` (default) — read from the file.
+  - `constant` — a single speaker on every chunk (requires `constantSpeakerId`).
+  - `auto` — detected by the backend from the media. Not available with a `pivotLanguage`.
+</ParamField>
+
+<ParamField body="constantSpeakerId" type="string">
+  Speaker assigned in `constant` mode: `M0` (male) or `F0` (female). Required when `speakersMode` is
+  `constant`.
+</ParamField>
+
+<ParamField body="shiftMs" type="number">
+  Shift every timing by this many milliseconds (may be negative).
+</ParamField>
+
+<ParamField body="frameRate" type="number">
+  Required when the file uses **SMPTE timecodes** — `HH:MM:SS:FF`, where the last field `FF` counts
+  **frames**, not milliseconds. Converting such a timecode to a real time needs the frame rate. The
+  request is rejected if SMPTE timecodes are detected without it.
+
+  Must be one of: `16`, `23.98`, `24`, `25`, `29.97`, `30`, `50`, `59.94`, `60`.
+</ParamField>
+
+## Examples
+
+Plain VTT — artifact only:
+
+```json
+{ "sourceScript": { "artifactId": "artifact_7c9a1f04b2e8" } }
+```
+
+VTT with a single speaker and a timing shift:
+
+```json
+{
+  "sourceScript": {
+    "artifactId": "artifact_7c9a1f04b2e8",
+    "speakersMode": "constant",
+    "constantSpeakerId": "F0",
+    "shiftMs": -500
+  }
+}
+```
+
+XLSX with a header row, columns by name, SMPTE timecodes:
+
+```json
+{
+  "sourceScript": {
+    "artifactId": "artifact_9d05c3a17f6b",
+    "columns": { "text": "Dialogue", "startTime": "In", "endTime": "Out", "speakerName": "Character" },
+    "frameRate": 25
+  }
+}
+```
+
+Headerless CSV, columns by index:
+
+```json
+{
+  "sourceScript": {
+    "artifactId": "artifact_2f8b41e0c93a",
+    "columns": { "text": 2, "startTime": 0, "endTime": 1 }
+  }
+}
+```
+
+## Validation
+
+Scripts are validated before the video is created; on any error the request fails with `400` and no
+video is created. A script is rejected when:
+
+- a chunk has no text, an invalid or missing timing, a start at or after its end, a duration under
+  100 ms, or a timing beyond the video length;
+- a required column is missing, or an unknown sheet/column name is referenced;
+- SMPTE timecodes are present without `frameRate`;
+- an `auto` mode (`timingsMode` or `speakersMode`) is combined with a `pivotLanguage`;
+- the file is too large (returns `413`).
+
+Non-voiced chunks skip the text and minimum-duration checks, but their timing must still be valid and
+within the video.

@@ -46,6 +46,25 @@ This endpoint allows you to add a new video to an existing project. The video wi
   Array of target language codes in [BCP 47](https://en.wikipedia.org/wiki/IETF_language_tag) format — a combination of an ISO 639-1 language code and an ISO 3166-1 Alpha-2 region code (e.g., `es-ES`, `fr-FR`, `en-US`).
 </ParamField>
 
+<ParamField body="sourceScript" type="object">
+  Attach a ready-made **source script** (the original-language transcript) instead of having it transcribed. Optional.
+
+  <ul>
+    <li>`artifactId` (string, required): Artifact ID of the uploaded script file. Must be an artifact of type `script`.</li>
+    <li>Optional import settings inline alongside `artifactId`.</li>
+  </ul>
+
+  See [Attaching Scripts](/studio/endpoints/videos/attaching-scripts) for supported formats, settings and examples.
+</ParamField>
+
+<ParamField body="targetScripts" type="object">
+  Attach ready-made **target scripts** (finished translations) per language. Optional.
+
+  An object where each key is a target language code that must be present in `targetLanguages`, and each value has the same shape as `sourceScript`.
+
+  Accepted for `dubbing`, `voiceover`, `audio_description` and `translation`. See [Attaching Scripts](/studio/endpoints/videos/attaching-scripts) for details.
+</ParamField>
+
 <ParamField body="backgroundWavArtifactId" type="string">
   Artifact ID of the background audio (optional).
 </ParamField>
@@ -249,6 +268,31 @@ curl -X POST \
       "shouldAutomateTranscription": true,
       "shouldAutomateTranslation": true,
       "shouldAutomateVoiceSelection": true
+    }
+  }'
+```
+
+```bash cURL (Dubbing with Source & Target Scripts)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Video with Ready Scripts",
+    "workflowType": "dubbing",
+    "sourceArtifactId": "artifact_1234567890",
+    "sourceLanguage": "en",
+    "targetLanguages": ["es-ES", "fr-FR"],
+    "sourceScript": {
+      "artifactId": "artifact_source_vtt"
+    },
+    "targetScripts": {
+      "es-ES": { "artifactId": "artifact_es_vtt" },
+      "fr-FR": {
+        "artifactId": "artifact_fr_xlsx",
+        "columns": { "text": "Line", "startTime": "In", "endTime": "Out", "speakerName": "Character" },
+        "frameRate": 25
+      }
     }
   }'
 ```
