@@ -22,6 +22,10 @@ description: 'Create a new project with general project information'
   Optional ID of a voices glossary to be used for this project.
 </ParamField>
 
+<ParamField body="folderId" type="string">
+  Optional ID of an existing folder in your company. The project is created inside that folder. Omit this field to create the project at the company root.
+</ParamField>
+
 <ParamField body="remark" type="string">
   Optional remarks for the project.
 </ParamField>
@@ -56,6 +60,10 @@ description: 'Create a new project with general project information'
   Client name, if specified.
 </ResponseField>
 
+<ResponseField name="folderId" type="string | null">
+  ID of the folder that contains the project, or `null` if the project is at the company root.
+</ResponseField>
+
 <ResponseField name="projectUrl" type="string">
   URL to access the project in the web app.
 </ResponseField>
@@ -78,7 +86,8 @@ curl -X POST \
     "name": "Marketing Campaign 2023",
     "managerEmail": "manager@company.com",
     "translationsGlossaryId": "gloss_5f83a14b2ec1b",
-    "voicesGlossaryId": "voices_7c92e3a1f56d8"
+    "voicesGlossaryId": "voices_7c92e3a1f56d8",
+    "folderId": "folder_5f83a14b2ec1b"
   }'
 ```
 
@@ -91,7 +100,8 @@ const response = await axios.post(
     name: "Marketing Campaign 2023",
     managerEmail: "manager@company.com",
     translationsGlossaryId: "gloss_5f83a14b2ec1b",
-    voicesGlossaryId: "voices_7c92e3a1f56d8"
+    voicesGlossaryId: "voices_7c92e3a1f56d8",
+    folderId: "folder_5f83a14b2ec1b"
   },
   {
     headers: {
@@ -115,6 +125,7 @@ console.log(response.data);
   "voicesGlossary": "voices_7c92e3a1f56d8",
   "remark": "Created via Dubformer Studio API",
   "clientName": null,
+  "folderId": "folder_5f83a14b2ec1b",
   "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
   "createdAt": "2023-12-01T10:00:00.000Z",
   "updatedAt": "2023-12-01T10:00:00.000Z"
@@ -134,4 +145,8 @@ console.log(response.data);
 
 <Note>
   Translation and voices glossaries are optional but must exist and be accessible to your organization if provided.
+</Note>
+
+<Note>
+  `folderId` must belong to the same company as the API key owner and must not be deleted. Omit it to keep the current behavior of creating the project at the company root.
 </Note>

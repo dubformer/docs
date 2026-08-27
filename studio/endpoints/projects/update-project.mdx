@@ -58,6 +58,10 @@ description: 'Update basic information of an existing project'
   Client name, if specified.
 </ResponseField>
 
+<ResponseField name="folderId" type="string | null">
+  ID of the folder that contains the project, or `null` if the project is at the company root.
+</ResponseField>
+
 <ResponseField name="projectUrl" type="string">
   URL to access the project in the web app.
 </ResponseField>
@@ -117,6 +121,7 @@ console.log(response.data);
   "voicesGlossary": null,
   "remark": "Created via Dubformer Studio API",
   "clientName": null,
+  "folderId": "folder_5f83a14b2ec1b",
   "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
   "createdAt": "2023-12-01T10:00:00.000Z",
   "updatedAt": "2023-12-01T16:45:00.000Z"

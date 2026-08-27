@@ -38,6 +38,10 @@ Returns an array of project objects, each containing the following fields:
   Client name, if specified.
 </ResponseField>
 
+<ResponseField name="folderId" type="string | null">
+  ID of the folder that contains the project, or `null` if the project is at the company root.
+</ResponseField>
+
 <ResponseField name="projectUrl" type="string">
   URL to access the project in the web app.
 </ResponseField>
@@ -84,6 +88,7 @@ console.log(response.data);
     "voicesGlossary": "voices_7c92e3a1f56d8",
     "remark": "Urgent project for Q4 launch",
     "clientName": "Acme Corp",
+    "folderId": "folder_5f83a14b2ec1b",
     "projectUrl": "https://studio.dubformer.ai/projects/proj_5f83a14b2ec1b",
     "createdAt": "2023-12-01T10:00:00.000Z",
     "updatedAt": "2023-12-01T15:30:00.000Z"
@@ -96,6 +101,7 @@ console.log(response.data);
     "voicesGlossary": null,
     "remark": null,
     "clientName": "Internal",
+    "folderId": null,
     "projectUrl": "https://studio.dubformer.ai/projects/proj_6e74b25c3fd2a",
     "createdAt": "2023-11-15T08:00:00.000Z",
     "updatedAt": "2023-12-01T12:00:00.000Z"
