@@ -28,6 +28,10 @@ description: 'Update basic information of an existing project'
   ID of a voices glossary to be used for this project. Pass empty string to remove.
 </ParamField>
 
+<ParamField body="pronunciationGlossaryId" type="string">
+  ID of a pronunciation glossary to be used for this project. Pass empty string to remove.
+</ParamField>
+
 ## Response
 
 <ResponseField name="id" type="string">
@@ -48,6 +52,10 @@ description: 'Update basic information of an existing project'
 
 <ResponseField name="voicesGlossary" type="string | null">
   ID of the voices glossary, if any.
+</ResponseField>
+
+<ResponseField name="pronunciationGlossary" type="string | null">
+  ID of the pronunciation glossary, if any.
 </ResponseField>
 
 <ResponseField name="remark" type="string | null">
@@ -84,7 +92,8 @@ curl -X PATCH \
     "name": "Updated Marketing Campaign 2023",
     "managerEmail": "new.manager@company.com",
     "translationsGlossaryId": "gloss_new_5f83a14b2ec1b",
-    "voicesGlossaryId": ""
+    "voicesGlossaryId": "",
+    "pronunciationGlossaryId": "pron_3a91c7d2e84f5"
   }'
 ```
 
@@ -97,7 +106,8 @@ const response = await axios.patch(
     name: "Updated Marketing Campaign 2023",
     managerEmail: "new.manager@company.com",
     translationsGlossaryId: "gloss_new_5f83a14b2ec1b",
-    voicesGlossaryId: ""
+    voicesGlossaryId: "",
+    pronunciationGlossaryId: "pron_3a91c7d2e84f5"
   },
   {
     headers: {
@@ -119,6 +129,7 @@ console.log(response.data);
   "status": "new",
   "translationGlossary": "gloss_new_5f83a14b2ec1b",
   "voicesGlossary": null,
+  "pronunciationGlossary": "pron_3a91c7d2e84f5",
   "remark": "Created via Dubformer Studio API",
   "clientName": null,
   "folderId": "folder_5f83a14b2ec1b",
@@ -140,5 +151,5 @@ console.log(response.data);
 </Note>
 
 <Note>
-  Translation and voices glossaries must exist and be accessible to your organization if provided. Pass an empty string to remove an existing glossary assignment.
+  Translation, voices and pronunciation glossaries must exist and belong to your organization if provided. Pass an empty string to remove an existing glossary assignment.
 </Note>

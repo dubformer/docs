@@ -32,6 +32,10 @@ description: 'Retrieve information about a specific project'
   ID of the voices glossary, if any.
 </ResponseField>
 
+<ResponseField name="pronunciationGlossary" type="string | null">
+  ID of the pronunciation glossary, if any.
+</ResponseField>
+
 <ResponseField name="remark" type="string | null">
   Project remarks, if any.
 </ResponseField>
@@ -88,6 +92,7 @@ console.log(response.data);
   "status": "new",
   "translationGlossary": "gloss_5f83a14b2ec1b",
   "voicesGlossary": "voices_7c92e3a1f56d8",
+  "pronunciationGlossary": "pron_3a91c7d2e84f5",
   "remark": "Urgent project for Q4 launch",
   "clientName": "Acme Corp",
   "folderId": "folder_5f83a14b2ec1b",

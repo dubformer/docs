@@ -22,6 +22,10 @@ description: 'Create a new project with general project information'
   Optional ID of a voices glossary to be used for this project.
 </ParamField>
 
+<ParamField body="pronunciationGlossaryId" type="string">
+  Optional ID of a pronunciation glossary to be used for this project.
+</ParamField>
+
 <ParamField body="folderId" type="string">
   Optional ID of an existing folder in your company. The project is created inside that folder. Omit this field to create the project at the company root.
 </ParamField>
@@ -50,6 +54,10 @@ description: 'Create a new project with general project information'
 
 <ResponseField name="voicesGlossary" type="string | null">
   ID of the voices glossary, if any.
+</ResponseField>
+
+<ResponseField name="pronunciationGlossary" type="string | null">
+  ID of the pronunciation glossary, if any.
 </ResponseField>
 
 <ResponseField name="remark" type="string | null">
@@ -87,6 +95,7 @@ curl -X POST \
     "managerEmail": "manager@company.com",
     "translationsGlossaryId": "gloss_5f83a14b2ec1b",
     "voicesGlossaryId": "voices_7c92e3a1f56d8",
+    "pronunciationGlossaryId": "pron_3a91c7d2e84f5",
     "folderId": "folder_5f83a14b2ec1b"
   }'
 ```
@@ -101,6 +110,7 @@ const response = await axios.post(
     managerEmail: "manager@company.com",
     translationsGlossaryId: "gloss_5f83a14b2ec1b",
     voicesGlossaryId: "voices_7c92e3a1f56d8",
+    pronunciationGlossaryId: "pron_3a91c7d2e84f5",
     folderId: "folder_5f83a14b2ec1b"
   },
   {
@@ -123,6 +133,7 @@ console.log(response.data);
   "status": "new",
   "translationGlossary": "gloss_5f83a14b2ec1b",
   "voicesGlossary": "voices_7c92e3a1f56d8",
+  "pronunciationGlossary": "pron_3a91c7d2e84f5",
   "remark": "Created via Dubformer Studio API",
   "clientName": null,
   "folderId": "folder_5f83a14b2ec1b",
@@ -144,7 +155,7 @@ console.log(response.data);
 </Note>
 
 <Note>
-  Translation and voices glossaries are optional but must exist and be accessible to your organization if provided.
+  Translation, voices and pronunciation glossaries are optional but must exist and belong to your organization if provided.
 </Note>
 
 <Note>
