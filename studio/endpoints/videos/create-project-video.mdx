@@ -118,13 +118,11 @@ This endpoint allows you to add a new video to an existing project. The video wi
     - `cloning` — use voice cloning (ElevenLabs). All target languages must support cloning
     - `emotion_transfer` — use emotion transfer. Must be enabled for your organization, and all target languages must support it
     - `label` — use only voices with a specific label. Requires `voiceSelectionVoicesLabel`
-    - `ai_selection` — **Voice lines only.** Describe each speaker from their reference recordings and pick the closest library voice
-    - `ai_design` — **Voice lines only.** Describe each speaker from their reference recordings and generate a voice to match
   - `voiceSelectionVoicesLabel` (string): Voice label name to filter by. Required when `voiceSelectionMode` is `label`. The label must exist and have matching voices for all target languages
 </ParamField>
 
 <ParamField body="referenceArchiveArtifactId" type="string">
-  **Voice lines only.** Artifact ID of a `references` archive — a zip of recordings (`.wav`, `.mp3`, `.m4a`, `.aac`, `.ogg`, `.flac`, or video files) matched to script lines by their `inputFileName` column. Required for `voiceSelectionMode` `cloning`, `emotion_transfer`, `ai_selection` and `ai_design`.
+  **Voice lines only.** Artifact ID of a `references` archive — a zip of recordings (`.wav`, `.mp3`, `.m4a`, `.aac`, `.ogg`, `.flac`, or video files) matched to script lines by their `inputFileName` column. Required for `voiceSelectionMode` `cloning` and `emotion_transfer`.
 </ParamField>
 
 <ParamField body="subtitlingParams" type="object">
@@ -328,7 +326,7 @@ curl -X POST \
     "referenceArchiveArtifactId": "artifact_references_zip",
     "pipelineOptions": {
       "shouldAutomateVoiceSelection": true,
-      "voiceSelectionMode": "ai_selection"
+      "voiceSelectionMode": "cloning"
     }
   }'
 ```
@@ -467,10 +465,10 @@ A `tts` video takes a script instead of a video and delivers one audio file per 
 | `sourceScript` | **Required.** The script to voice — see [Attaching Scripts](/studio/endpoints/videos/attaching-scripts) for the Voice lines columns (`outputFileName`, `inputFileName`, `speechPrompt`, …). Only the `fromFile` timings and speakers modes are accepted; `shiftMs`, `frameRate` and `constantSpeakerId` are not |
 | `sourceLanguage` / `targetLanguages` | The script's language, given as both: `targetLanguages` must contain exactly one language equal to `sourceLanguage` |
 | `referenceArchiveArtifactId` | Optional recordings for the reference-based voice modes |
-| `pipelineOptions.voiceSelectionMode` | All modes, including `ai_selection` and `ai_design`; the reference-based modes need `referenceArchiveArtifactId` |
+| `pipelineOptions.voiceSelectionMode` | `default`, `label`, `cloning`, `emotion_transfer`; `cloning` and `emotion_transfer` need `referenceArchiveArtifactId` |
 | `targetScripts`, `pivotLanguage`, `subtitlingParams`, `translationPrompt`, `sourceLanguageWhitelist`, `shouldAutomateTranscription`, `shouldAutomateTranslation`, the background / mix / vocals artifacts | Rejected with `400` |
 
-Credits are charged by the number of characters in the script at creation. Voices are selected and the script is rendered automatically; poll [Get Project Video Status](/studio/endpoints/videos/get-project-video-status) until the `rendering` phase rests on `editor`, then fetch `tts.zip` from [List Export Files](/studio/endpoints/videos/list-export-files).
+Credits are charged by the number of characters in the script at creation. Voices are selected and the script is rendered automatically; poll [Get Project Video Status](/studio/endpoints/videos/get-project-video-status) until the `rendering` phase rests on `editor`, then fetch `tts.zip` from [List Translation Export Files](/studio/endpoints/videos/list-translation-export-files) for the video's language.
 
 <Note>
   The Voice lines workflow must be enabled for your organization. Contact your account manager to activate it.
