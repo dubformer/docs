@@ -22,6 +22,7 @@ Scripts can only be attached at video creation time.
 | `transcription` | ✓ | — |
 | `translation` | ✓ | ✓ |
 | `subtitling` | ✓ | — |
+| `tts` (Voice lines) | ✓ **required** | — |
 
 Each script references the `artifactId` of an
 [already-uploaded artifact](/studio/endpoints/artifacts/overview) of type `script`, plus
@@ -68,6 +69,10 @@ Optional, inline next to `artifactId`. Format restrictions are noted where they 
   | `endTime` | End timecode. |
   | `speakerTag` | Speaker tag, e.g. `M0`, `F1`. |
   | `speakerName` | Speaker display name, or `non-voiced` to mark the chunk non-voiced. |
+  | `outputFileName` | **Voice lines.** Name of the delivered audio file. Lines sharing a name are joined into one file in script order; `.wav` is appended if missing. Without it every line becomes its own file. |
+  | `inputFileName` | **Voice lines.** Name of the line's reference recording inside the references archive, matched by name or by name without extension. |
+  | `speechPrompt` | **Voice lines.** Direction for the line (e.g. `calm, warm`). Becomes an inline tag for ElevenLabs v3 voices and a synthesis prompt elsewhere. |
+  | `section`, `context`, `timeConstraints` | **Voice lines.** Notes shown to the editor. They do not affect synthesis. |
 
   A `non-voiced` value in either speaker column is honored only in `fromFile` speaker mode.
 

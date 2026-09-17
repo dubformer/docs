@@ -56,6 +56,12 @@ start. Transcription-only videos return a single entry keyed by the source langu
   (edits are always possible). Use the export endpoints to fetch produced files.
 </Note>
 
+<Note>
+  A Voice lines (`tts`) video has no transcription, translation or mixing. It reports `voiceover` while the
+  script is uploaded and its voices are selected, then `rendering` while the lines are synthesized. A
+  finished render rests at `pendingOn: "editor"`; a render that failed for some or all lines sets `isError`.
+</Note>
+
 <RequestExample>
 ```bash cURL
 curl -X GET \
