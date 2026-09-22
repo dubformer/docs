@@ -455,25 +455,6 @@ console.log(response.data);
 ```
 </RequestExample>
 
-## Voice lines
-
-A `tts` video takes a script instead of a video and delivers one audio file per line (or per `outputFileName` group), packed as `tts.zip`. Compared to the other workflows:
-
-| Field | Voice lines |
-|---|---|
-| `sourceArtifactId` | Must be omitted |
-| `sourceScript` | **Required.** The script to voice — see [Attaching Scripts](/studio/endpoints/videos/attaching-scripts) for the Voice lines columns (`outputFileName`, `inputFileName`, `speechPrompt`, …). Only the `fromFile` timings and speakers modes are accepted; `shiftMs`, `frameRate` and `constantSpeakerId` are not |
-| `sourceLanguage` / `targetLanguages` | The script's language, given as both: `targetLanguages` must contain exactly one language equal to `sourceLanguage` |
-| `referenceArchiveArtifactId` | Optional recordings for the reference-based voice modes |
-| `pipelineOptions.voiceSelectionMode` | `default`, `label`, `cloning`, `emotion_transfer`; `cloning` and `emotion_transfer` need `referenceArchiveArtifactId` |
-| `targetScripts`, `pivotLanguage`, `subtitlingParams`, `translationPrompt`, `sourceLanguageWhitelist`, `shouldAutomateTranscription`, `shouldAutomateTranslation`, the background / mix / vocals artifacts | Rejected with `400` |
-
-Credits are charged by the number of characters in the script at creation. Voices are selected and the script is rendered automatically; poll [Get Project Video Status](/studio/endpoints/videos/get-project-video-status) until the `rendering` phase rests on `editor`, then fetch `tts.zip` from [List Translation Export Files](/studio/endpoints/videos/list-translation-export-files) for the video's language.
-
-<Note>
-  The Voice lines workflow must be enabled for your organization. Contact your account manager to activate it.
-</Note>
-
 ## Response
 
 <ResponseField name="id" type="string">
@@ -549,3 +530,22 @@ Credits are charged by the number of characters in the script at creation. Voice
 }
 ```
 </ResponseExample>
+
+## Voice lines
+
+A `tts` video takes a script instead of a video and delivers one audio file per line (or per `outputFileName` group), packed as `tts.zip`. Compared to the other workflows:
+
+| Field | Voice lines |
+|---|---|
+| `sourceArtifactId` | Must be omitted |
+| `sourceScript` | **Required.** The script to voice — see [Attaching Scripts](/studio/endpoints/videos/attaching-scripts) for the Voice lines columns (`outputFileName`, `inputFileName`, `speechPrompt`, …). Only the `fromFile` timings and speakers modes are accepted; `shiftMs`, `frameRate` and `constantSpeakerId` are not |
+| `sourceLanguage` / `targetLanguages` | The script's language, given as both: `targetLanguages` must contain exactly one language equal to `sourceLanguage` |
+| `referenceArchiveArtifactId` | Optional recordings for the reference-based voice modes |
+| `pipelineOptions.voiceSelectionMode` | `default`, `label`, `cloning`, `emotion_transfer`; `cloning` and `emotion_transfer` need `referenceArchiveArtifactId` |
+| `targetScripts`, `pivotLanguage`, `subtitlingParams`, `translationPrompt`, `sourceLanguageWhitelist`, `shouldAutomateTranscription`, `shouldAutomateTranslation`, the background / mix / vocals artifacts | Rejected with `400` |
+
+Credits are charged by the number of characters in the script at creation. Voices are selected and the script is rendered automatically; poll [Get Project Video Status](/studio/endpoints/videos/get-project-video-status) until the `rendering` phase rests on `editor`, then fetch `tts.zip` from [List Translation Export Files](/studio/endpoints/videos/list-translation-export-files) for the video's language.
+
+<Note>
+  The Voice lines workflow must be enabled for your organization. Contact your account manager to activate it.
+</Note>
