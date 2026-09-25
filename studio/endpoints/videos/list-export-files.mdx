@@ -11,6 +11,10 @@ link.
 Only files that are currently available are returned. Files that are still being produced are
 omitted, so you can poll this endpoint until the file you need appears in the response.
 
+The original script is the most complete transcript available: `asr_aligned.vtt` once the transcription is
+reviewed and aligned, otherwise the edited transcript (`asr_hitl.vtt`) or the automated one (`asr_auto.vtt`).
+Check `filename` to tell them apart.
+
 ## Path Parameters
 
 <ParamField path="projectId" type="string" required>
