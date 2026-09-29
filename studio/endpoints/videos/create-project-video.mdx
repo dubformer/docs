@@ -110,7 +110,7 @@ This endpoint allows you to add a new video to an existing project. The video wi
 <ParamField body="pipelineOptions" type="object">
   Pipeline configuration options (all fields optional):
 
-  - `shouldAutomateTranscription` (boolean): Automatically transcribe the source video
+  - `shouldAutomateTranscription` (boolean): Automatically transcribe the source video; not available with `pivotLanguage`
   - `shouldAutomateTranslation` (boolean): Automatically translate the transcription
   - `shouldAutomateVoiceSelection` (boolean): Automatically select voices for speakers
   - `voiceSelectionMode` (string): How voices are selected during automation. Requires `shouldAutomateVoiceSelection: true`. One of:
@@ -271,7 +271,7 @@ curl -X POST \
     "targetLanguages": ["en-US", "es-ES", "fr-FR"],
     "pivotLanguage": "en-US",
     "pipelineOptions": {
-      "shouldAutomateTranscription": true,
+      "shouldAutomateTranscription": false,
       "shouldAutomateTranslation": true,
       "shouldAutomateVoiceSelection": true
     }
