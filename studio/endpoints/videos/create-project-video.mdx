@@ -531,6 +531,22 @@ console.log(response.data);
 ```
 </ResponseExample>
 
+<ResponseExample>
+```json 429 Response
+{
+  "error": "Video creation limit reached: 100 videos per hour. Try again in 12 min.",
+  "resource": "videos",
+  "window": "1h",
+  "limit": 100,
+  "retryAfterSeconds": 720
+}
+```
+</ResponseExample>
+
+<Note>
+  Video creation is rate limited per organization. Over the limit the endpoint returns `429` with a `Retry-After` header. See [Rate Limiting](/studio/authentication#rate-limiting).
+</Note>
+
 ## Voice lines
 
 A `tts` video takes a script instead of a video and delivers one audio file per line (or per `outputFileName` group), packed as `tts.zip`. Compared to the other workflows:

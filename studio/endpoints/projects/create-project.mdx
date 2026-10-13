@@ -144,7 +144,23 @@ console.log(response.data);
 ```
 </ResponseExample>
 
+<ResponseExample>
+```json 429 Response
+{
+  "error": "Project creation limit reached: 25 projects per hour. Try again in 17 min.",
+  "resource": "projects",
+  "window": "1h",
+  "limit": 25,
+  "retryAfterSeconds": 1020
+}
+```
+</ResponseExample>
+
 ## Notes
+
+<Note>
+  Project creation is rate limited per organization. Over the limit the endpoint returns `429` with a `Retry-After` header. See [Rate Limiting](/studio/authentication#rate-limiting).
+</Note>
 
 <Note>
   This endpoint creates a project with basic information only. Videos can be added to the project using separate video management endpoints.

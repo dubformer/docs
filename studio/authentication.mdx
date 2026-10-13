@@ -35,6 +35,29 @@ The Dubformer API implements rate limiting to ensure fair usage and system stabi
 
 If you exceed these limits, you'll receive a `429 Too Many Requests` response. The response will include `Retry-After` header indicating how many seconds to wait before making another request.
 
+### Project and video creation
+
+Creating projects and videos is also rate limited per organization. Everything your organization creates counts, including projects and videos created in Dubformer Studio and those deleted later.
+
+| Resource | Last hour | Last 6 hours | Last 24 hours |
+|---|---|---|---|
+| Projects, `POST /api/v1/projects/create` | 25 | 50 | 100 |
+| Videos, `POST /api/v1/projects/{projectId}/videos/create` | 100 | 150 | 300 |
+
+The windows are sliding. Contact your account manager if your organization needs higher limits.
+
+When a limit is reached, the request is rejected with `429 Too Many Requests`. The `Retry-After` header holds the number of seconds until the next project or video can be created, and the body names the limit:
+
+```json
+{
+  "error": "Video creation limit reached: 100 videos per hour. Try again in 12 min.",
+  "resource": "videos",
+  "window": "1h",
+  "limit": 100,
+  "retryAfterSeconds": 720
+}
+```
+
 ## Error Responses
 
 When authentication fails, you'll receive one of the following error responses:
