@@ -118,7 +118,7 @@ This endpoint allows you to add a new video to an existing project. The video wi
     - `cloning` — use voice cloning (ElevenLabs). All target languages must support cloning
     - `emotion_transfer` — use emotion transfer. Must be enabled for your organization, and all target languages must support it
     - `label` — use only voices with a specific label. Requires `voiceSelectionVoicesLabel`
-  - `voiceSelectionVoicesLabel` (string): Voice label name to filter by. Required when `voiceSelectionMode` is `label`. The label must exist and have matching voices for all target languages
+  - `voiceSelectionVoicesLabel` (string): Voice label name to filter by. Required when `voiceSelectionMode` is `label`. The label must exist; a speaker the label has no matching voice for keeps a library voice
 </ParamField>
 
 <ParamField body="referenceArchiveArtifactId" type="string">
@@ -254,6 +254,24 @@ curl -X POST \
       "shouldAutomateVoiceSelection": true,
       "voiceSelectionMode": "label",
       "voiceSelectionVoicesLabel": "News"
+    }
+  }'
+```
+
+```bash cURL (Audio Description with Voice Label)
+curl -X POST \
+  https://studio.dubformer.ai/api/v1/projects/proj_5f83a14b2ec1b/videos/create \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Documentary",
+    "workflowType": "audio_description",
+    "sourceArtifactId": "artifact_1234567890",
+    "sourceLanguage": "en",
+    "targetLanguages": ["es-ES", "fr-FR"],
+    "pipelineOptions": {
+      "voiceSelectionMode": "label",
+      "voiceSelectionVoicesLabel": "Narrators"
     }
   }'
 ```
@@ -546,6 +564,17 @@ console.log(response.data);
 <Note>
   Video creation is rate limited per organization. Over the limit the endpoint returns `429` with a `Retry-After` header. See [Rate Limiting](/studio/authentication#rate-limiting).
 </Note>
+
+## Audio description
+
+An `audio_description` video is voiced by a single narrator. The narrator voice is always selected automatically: there is no voice selection task to assign. Compared to the other workflows:
+
+| Field | Audio description |
+|---|---|
+| `pipelineOptions.voiceSelectionMode` | `default` (a library voice) or `label`. `cloning`, `emotion_transfer`, `ai_selection` and `ai_design` are rejected with `400`: the narrator has no recording in the source video to take a voice from |
+| `pipelineOptions.voiceSelectionVoicesLabel` | With `label`, the narrator gets a voice of the label for the target language, whatever its gender. To get one exact voice, use a label that holds only that voice. If the label has no voice for a language, the narrator of that language gets a library voice |
+| `pipelineOptions.shouldAutomateVoiceSelection` | Not required for `label` |
+| `shouldAutomateTranscription`, `shouldAutomateTranslation`, `shouldAutomateVoiceSelection` | Have no effect |
 
 ## Voice lines
 
